@@ -41,7 +41,7 @@ function App() {
                 <tr key={row.id}>
                   <td>{row.id}</td>
                   <td>{row.title}</td>
-                  <td>{row.modifyTime}</td>
+                  <td>{formatTime(row.modifyTime)}</td>
                 </tr>
               ))
           )}
@@ -49,6 +49,11 @@ function App() {
       </table>
     </div>
   );
+}
+
+function formatTime(time: number) {
+  if (!time) return 'Stop Updated'
+  return new Date(time).toLocaleString()
 }
 
 export default App;
