@@ -1,28 +1,54 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+interface IData {
+  id: number
+  key: string
+  title: string
+  modifyTime: number
+}
+
+interface IState {
+  loading: boolean
+  error?: string
+  data?: IData[]
+}
+
+function App() {
+  const [state, setState] = useState<IState>({ loading: false })
+  useEffect(() => {
+    fetch('/api/sakuras')
+      .then(resp => resp.json())
+      .then(json => setState({ loading: true, data: json.data }))
+      .catch(error => setState({ ...state, error: error.message }))
+  }, [])
+  return (
+    <div className="App">
+      {state.error}
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Last Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          {state.data && (
+            state.data
+              .sort((a, b) => b.key.localeCompare(a.key))
+              .map(row => (
+                <tr key={row.id}>
+                  <td>{row.id}</td>
+                  <td>{row.title}</td>
+                  <td>{row.modifyTime}</td>
+                </tr>
+              ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default App;
