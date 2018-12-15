@@ -1,60 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import Table from 'react-bootstrap/lib/Table'
-import './App.css';
-
-interface IData {
-  id: number
-  key: string
-  title: string
-  modifyTime: number
-}
-
-interface IState {
-  loading: boolean
-  error?: string
-  data?: IData[]
-}
+import React from 'react';
+import './App.scss';
+import { Switch, Route, Link } from 'react-router-dom';
+import Sakuras from './components/Sakuras';
 
 function App() {
-  const [state, setState] = useState<IState>({ loading: false })
-  useEffect(() => {
-    fetch('/api/sakuras')
-      .then(resp => resp.json())
-      .then(json => setState({ loading: true, data: json.data }))
-      .catch(error => setState({ ...state, error: error.message }))
-  }, [])
   return (
     <div className="App">
-      {state.error}
-      <Table bordered={true} striped={true} hover={true}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Last Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {state.data && (
-            state.data
-              .sort((a, b) => b.key.localeCompare(a.key))
-              .map((row, idx) => (
-                <tr key={row.id}>
-                  <td>{idx + 1}</td>
-                  <td>{row.title}</td>
-                  <td>{formatTime(row.modifyTime)}</td>
-                </tr>
-              ))
+      <header>
+        <Link to="/">Home</Link>
+        <Link to="/sakuras">Sakuras</Link>
+      </header>
+      <Switch>
+        <Route path="/" exact={true}>
+          <div className="text-content">Hello, This is home page.</div>
+        </Route>
+        <Route path="/sakuras" component={Sakuras} />
+        <Route path="*">
+          {({ location }) => (
+            <div className="text-content">404 Not Found: {location.pathname}</div>
           )}
-        </tbody>
-      </Table>
+        </Route>
+      </Switch>
     </div>
-  );
-}
-
-function formatTime(time: number) {
-  if (!time) return 'Stop Updated'
-  return new Date(time).toLocaleString()
+  )
 }
 
 export default App;
