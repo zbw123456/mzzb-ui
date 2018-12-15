@@ -37,9 +37,9 @@ function App() {
           {state.data && (
             state.data
               .sort((a, b) => b.key.localeCompare(a.key))
-              .map(row => (
+              .map((row, idx) => (
                 <tr key={row.id}>
-                  <td>{row.id}</td>
+                  <td>{idx + 1}</td>
                   <td>{row.title}</td>
                   <td>{formatTime(row.modifyTime)}</td>
                 </tr>
