@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Table from 'react-bootstrap/lib/Table'
 import './App.css';
 
 interface IData {
@@ -25,7 +26,7 @@ function App() {
   return (
     <div className="App">
       {state.error}
-      <table>
+      <Table bordered={true} striped={true} hover={true}>
         <thead>
           <tr>
             <th>#</th>
@@ -46,7 +47,7 @@ function App() {
               ))
           )}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 }

@@ -7,8 +7,10 @@
     "@types/jest": "23.3.10",
     "@types/node": "10.12.15",
     "@types/react": "16.7.17",
+    "@types/react-bootstrap": "^0.32.15",
     "@types/react-dom": "16.0.11",
     "react": "^16.7.0-alpha.2",
+    "react-bootstrap": "^0.32.4",
     "react-dom": "^16.7.0-alpha.2",
     "react-scripts": "2.1.1",
     "typescript": "3.2.2"
