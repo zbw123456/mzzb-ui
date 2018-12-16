@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Table from 'react-bootstrap/lib/Table';
 import Alert from 'antd/lib/alert';
 import request from '../functions/request';
+import Table, { ICol } from '../libraries/Table';
 
 interface IData {
   id: number
@@ -16,6 +16,19 @@ interface IState {
   data?: IData[]
 }
 
+function getCols(): ICol<IData>[] {
+  return [
+    { key: 'idx', title: '#', format: (row, idx) => idx + 1 },
+    { key: 'title', title: 'Title', format: (row) => row.title },
+    { key: 'lastUpdate', title: 'Last Update', format: (row) => formatTime(row.modifyTime) },
+  ];
+}
+
+function formatTime(time: number) {
+  if (!time) return 'Stop Updated'
+  return new Date(time).toLocaleString()
+}
+
 function Sakuras() {
   const [state, setState] = useState<IState>({ loading: false })
   useEffect(() => {
@@ -28,35 +41,13 @@ function Sakuras() {
       {state.error && (
         <Alert type="error" message={state.error} />
       )}
-      <Table bordered={true} striped={true} hover={true}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Last Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {state.data && (
-            state.data
-              .sort((a, b) => b.key.localeCompare(a.key))
-              .map((row, idx) => (
-                <tr key={row.id}>
-                  <td>{idx + 1}</td>
-                  <td>{row.title}</td>
-                  <td>{formatTime(row.modifyTime)}</td>
-                </tr>
-              ))
-          )}
-        </tbody>
-      </Table>
+      <Table
+        rows={state.data}
+        cols={getCols()}
+        sortRow={(a, b) => b.key.localeCompare(a.key)}
+      />
     </div>
   );
 }
 
 export default Sakuras
-
-function formatTime(time: number) {
-  if (!time) return 'Stop Updated'
-  return new Date(time).toLocaleString()
-}
