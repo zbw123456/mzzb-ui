@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/lib/Table'
+import Alert from 'antd/lib/alert'
 
 interface IData {
   id: number
@@ -18,13 +19,21 @@ function Sakuras() {
   const [state, setState] = useState<IState>({ loading: false })
   useEffect(() => {
     fetch('/api/sakuras')
-      .then(resp => resp.json())
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json()
+        } else {
+          throw new Error(`${resp.status} ${resp.statusText}`)
+        }
+      })
       .then(json => setState({ loading: true, data: json.data }))
       .catch(error => setState({ ...state, error: error.message }))
   }, [])
   return (
     <div className="Sakuras">
-      {state.error}
+      {state.error && (
+        <Alert type="error" message={state.error} />
+      )}
       <Table bordered={true} striped={true} hover={true}>
         <thead>
           <tr>
