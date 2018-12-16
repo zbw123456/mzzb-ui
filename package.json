@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "proxy": "https://mingzuozhibi.com",
   "dependencies": {
+    "antd": "^3.11.2",
     "node-sass": "^4.11.0",
     "react": "^16.7.0-alpha.2",
     "react-bootstrap": "^0.32.4",
