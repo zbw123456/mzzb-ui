@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Table from 'react-bootstrap/lib/Table'
-import Alert from 'antd/lib/alert'
+import Table from 'react-bootstrap/lib/Table';
+import Alert from 'antd/lib/alert';
+import request from '../functions/request';
 
 interface IData {
   id: number
@@ -18,14 +19,7 @@ interface IState {
 function Sakuras() {
   const [state, setState] = useState<IState>({ loading: false })
   useEffect(() => {
-    fetch('/api/sakuras')
-      .then(resp => {
-        if (resp.ok) {
-          return resp.json()
-        } else {
-          throw new Error(`${resp.status} ${resp.statusText}`)
-        }
-      })
+    request('/api/sakuras')
       .then(json => setState({ loading: true, data: json.data }))
       .catch(error => setState({ ...state, error: error.message }))
   }, [])
