@@ -1,8 +1,11 @@
 import React from 'react';
-import './App.scss';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, NavLink } from 'react-router-dom';
+import Layout from 'antd/lib/layout';
+
+import Home from './components/Home';
+import NotFound from './components/NotFound';
 import Sakuras from './components/Sakuras';
-import { Layout } from 'antd';
+import './App.scss';
 
 const { Header, Content, Footer } = Layout;
 
@@ -11,20 +14,14 @@ function App() {
     <div className="App">
       <Layout>
         <Header>
-          <Link to="/">Home</Link>
-          <Link to="/sakuras">Sakuras</Link>
+          <NavLink to="/" exact={true}>Home</NavLink>
+          <NavLink to="/sakuras">Sakuras</NavLink>
         </Header>
         <Content>
           <Switch>
-            <Route path="/" exact={true}>
-              <div className="text-content">Hello, This is home page.</div>
-            </Route>
+            <Route path="/" exact={true} component={Home} />
             <Route path="/sakuras" component={Sakuras} />
-            <Route path="*">
-              {({ location }) => (
-                <div className="text-content">404 Not Found: {location.pathname}</div>
-              )}
-            </Route>
+            <Route path="*" component={NotFound} />
           </Switch>
         </Content>
         <Footer>
