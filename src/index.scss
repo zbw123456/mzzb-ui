@@ -12,10 +12,10 @@ code {
 
 .ant-input-form {
   padding: 5px;
-  .ant-input-affix-wrapper {
+  &>* {
     margin: 5px;
-    input.ant-input {
-      width: calc(100% - 10px);
-    }
+  }
+  input.ant-input {
+    width: calc(100% - 10px);
   }
 }
