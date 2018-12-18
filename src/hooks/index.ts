@@ -15,10 +15,10 @@ interface IState<T> {
   data?: T
 }
 
-export function useGetJson<T>(url: string, initialState: IState<T> | (() => IState<T>)) {
+export function useGetJson<T>(url: string, initialState: IState<T> = { loading: false }) {
   const [state, setState] = useState<IState<T>>(initialState)
   useEffect(() => {
-    request('/api/sakuras')
+    request(url)
       .then(json => setState({ loading: true, data: json.data }))
       .catch(error => setState({ ...state, error: error.message }))
   }, [])
