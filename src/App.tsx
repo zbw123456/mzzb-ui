@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Switch, Route, NavLink } from 'react-router-dom';
 import Layout from 'antd/lib/layout';
-
-import Home from './components/Home';
-import NotFound from './components/NotFound';
-import Sakuras from './components/Sakuras';
-import Login from './components/Login';
+import Spin from 'antd/lib/spin';
 import './App.scss';
 
 const { Header, Content, Footer } = Layout;
+
+const routes = [
+  {
+    path: '/',
+    exact: true,
+    loader: () => import(/* webpackChunkName: "home" */ './components/Home')
+  },
+  {
+    path: '/sakuras',
+    loader: () => import(/* webpackChunkName: "sakuras" */ './components/Sakuras')
+  },
+  {
+    path: '/login',
+    loader: () => import(/* webpackChunkName: "login" */ './components/Login')
+  },
+  {
+    path: '*',
+    loader: () => import(/* webpackChunkName: "notfound" */ './components/NotFound')
+  },
+]
 
 function App() {
   return (
@@ -22,12 +38,18 @@ function App() {
           </span>
         </Header>
         <Content>
-          <Switch>
-            <Route path="/" exact={true} component={Home} />
-            <Route path="/sakuras" component={Sakuras} />
-            <Route path="/login" component={Login} />
-            <Route path="*" component={NotFound} />
-          </Switch>
+          <Suspense fallback={<Spin delay={200} />}>
+            <Switch>
+              {routes.map(route => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  exact={route.exact === true}
+                  component={lazy(route.loader)}
+                />
+              ))}
+            </Switch>
+          </Suspense>
         </Content>
         <Footer>
           Copyright 2018 mingzuozhibi.com
