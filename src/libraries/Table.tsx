@@ -1,23 +1,23 @@
 import React from 'react';
 import RbTable from 'react-bootstrap/lib/Table';
 
-interface IRow {
+interface BaseRow {
   key: string
 }
 
-export interface ICol<R extends IRow> {
+export interface ICol<IRow> {
   key: string
   title: string
-  format: (row: R, idx: number) => React.ReactNode
+  format: (row: IRow, idx: number) => React.ReactNode
 }
 
-interface IProps<R extends IRow> {
-  rows?: R[]
-  cols: ICol<R>[]
-  sortRow?: (a: R, b: R) => number
+interface IProps<IRow> {
+  rows?: IRow[]
+  cols: ICol<IRow>[]
+  sortRow?: (a: IRow, b: IRow) => number
 }
 
-function Table<R extends IRow>(props: IProps<R>) {
+function Table<IRow extends BaseRow>(props: IProps<IRow>) {
   if (!props.rows) {
     return null
   }

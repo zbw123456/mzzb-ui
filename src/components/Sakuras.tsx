@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Alert from 'antd/lib/alert';
-import request from '../functions/request';
 import Table, { ICol } from '../libraries/Table';
+import { useDocumentTitle, useGetJson } from '../hooks';
 
-interface IData {
+interface IRow {
   id: number
   key: string
   title: string
   modifyTime: number
 }
 
-interface IState {
-  loading: boolean
-  error?: string
-  data?: IData[]
-}
-
-function getCols(): ICol<IData>[] {
+function getCols(): ICol<IRow>[] {
   return [
     { key: 'idx', title: '#', format: (row, idx) => idx + 1 },
     { key: 'title', title: 'Title', format: (row) => row.title },
@@ -30,12 +24,8 @@ function formatTime(time: number) {
 }
 
 function Sakuras() {
-  const [state, setState] = useState<IState>({ loading: false })
-  useEffect(() => {
-    request('/api/sakuras')
-      .then(json => setState({ loading: true, data: json.data }))
-      .catch(error => setState({ ...state, error: error.message }))
-  }, [])
+  useDocumentTitle('Sakuras')
+  const state = useGetJson<IRow[]>('/api/sakuras', { loading: false })
   return (
     <div className="Sakuras">
       {state.error && (
