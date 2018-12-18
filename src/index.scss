@@ -9,3 +9,13 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+.ant-input-form {
+  padding: 5px;
+  .ant-input-affix-wrapper {
+    margin: 5px;
+    input.ant-input {
+      width: calc(100% - 10px);
+    }
+  }
+}

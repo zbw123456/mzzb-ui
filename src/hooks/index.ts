@@ -24,3 +24,8 @@ export function useGetJson<T>(url: string, initialState: IState<T> | (() => ISta
   }, [])
   return state
 }
+
+export function useInput<S>(initialState: S | (() => S)) {
+  const [value, setValue] = useState(initialState)
+  return { value, onChange: (e: any) => setValue(e.target.value) }
+}

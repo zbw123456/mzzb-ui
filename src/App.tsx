@@ -5,6 +5,7 @@ import Layout from 'antd/lib/layout';
 import Home from './components/Home';
 import NotFound from './components/NotFound';
 import Sakuras from './components/Sakuras';
+import Login from './components/Login';
 import './App.scss';
 
 const { Header, Content, Footer } = Layout;
@@ -24,6 +25,7 @@ function App() {
           <Switch>
             <Route path="/" exact={true} component={Home} />
             <Route path="/sakuras" component={Sakuras} />
+            <Route path="/login" component={Login} />
             <Route path="*" component={NotFound} />
           </Switch>
         </Content>
