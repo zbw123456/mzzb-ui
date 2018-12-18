@@ -2,29 +2,10 @@ import React, { lazy, Suspense } from 'react';
 import { Switch, Route, NavLink } from 'react-router-dom';
 import Layout from 'antd/lib/layout';
 import Spin from 'antd/lib/spin';
+import routes from './routes';
 import './App.scss';
 
 const { Header, Content, Footer } = Layout;
-
-const routes = [
-  {
-    path: '/',
-    exact: true,
-    loader: () => import(/* webpackChunkName: "home" */ './components/Home')
-  },
-  {
-    path: '/sakuras',
-    loader: () => import(/* webpackChunkName: "sakuras" */ './components/Sakuras')
-  },
-  {
-    path: '/login',
-    loader: () => import(/* webpackChunkName: "login" */ './components/Login')
-  },
-  {
-    path: '*',
-    loader: () => import(/* webpackChunkName: "notfound" */ './components/NotFound')
-  },
-]
 
 function App() {
   return (
