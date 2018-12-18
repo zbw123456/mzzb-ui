@@ -16,6 +16,9 @@ function App() {
         <Header>
           <NavLink to="/" exact={true}>Home</NavLink>
           <NavLink to="/sakuras">Sakuras</NavLink>
+          <span className="right">
+            <NavLink to="/login">Login</NavLink>
+          </span>
         </Header>
         <Content>
           <Switch>
