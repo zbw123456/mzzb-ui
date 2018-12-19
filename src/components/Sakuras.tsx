@@ -2,6 +2,7 @@ import React from 'react';
 import Alert from 'antd/lib/alert';
 import Table, { ICol } from '../libraries/Table';
 import { useDocumentTitle, useGetJson } from '../hooks';
+import { formatTimeout } from '../functions/format'
 
 interface IRow {
   id: number
@@ -14,13 +15,13 @@ function getCols(): ICol<IRow>[] {
   return [
     { key: 'idx', title: '#', format: (row, idx) => idx + 1 },
     { key: 'title', title: 'Title', format: (row) => row.title },
-    { key: 'lastUpdate', title: 'Last Update', format: (row) => formatTime(row.modifyTime) },
+    { key: 'lastUpdate', title: 'Last Update', format: formatLastUpdate },
   ];
 }
 
-function formatTime(time: number) {
-  if (!time) return 'Stop Updated'
-  return new Date(time).toLocaleString()
+function formatLastUpdate(row: IRow) {
+  if (!row.modifyTime) return 'Stop Updated'
+  return `${formatTimeout(row.modifyTime)}前`
 }
 
 function Sakuras() {
