@@ -1,30 +1,32 @@
 import React, { lazy, Suspense } from 'react';
-import { Switch, Route, NavLink } from 'react-router-dom';
+import { RouteChildrenProps } from 'react-router';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import Layout from 'antd/lib/layout';
 import Spin from 'antd/lib/spin';
+import Menu from 'antd/lib/menu';
 import routes from './routes';
 import './App.scss';
 
 const { Header, Content, Footer } = Layout;
 
-function App() {
+function App({ location, history }: RouteChildrenProps) {
   const menus = routes.filter(route => Boolean(route.title))
   return (
     <div className="App">
       <Layout>
         <Header>
-          {menus.map(menu => (
-            <NavLink
-              to={menu.path}
-              key={menu.title}
-              exact={menu.exact === true}
-            >
-              {menu.title}
-            </NavLink>
-          ))}
-          <span className="right">
-            <NavLink to="/login">Login</NavLink>
-          </span>
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            style={{ lineHeight: '64px' }}
+            defaultSelectedKeys={[location.pathname]}
+            onSelect={param => history.push(param.key)}
+          >
+            {menus.map(menu => (
+              <Menu.Item key={menu.path}>{menu.title}</Menu.Item>
+            ))}
+            <Menu.Item className='right' key="/login">Login</Menu.Item>
+          </Menu>
         </Header>
         <Content>
           <Suspense fallback={<Spin delay={200} />}>
@@ -48,4 +50,4 @@ function App() {
   )
 }
 
-export default App;
+export default withRouter(App);
