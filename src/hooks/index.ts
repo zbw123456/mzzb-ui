@@ -4,24 +4,23 @@ import request from "../functions/request";
 export function useDocumentTitle(title: string, inputs: ReadonlyArray<any> = []) {
   useEffect(() => {
     const prevTitle = document.title
-    document.title = title + ' - mingzuozhibi.com'
+    document.title = `${title} - mingzuozhibi.com`
     return () => document.title = prevTitle
   }, inputs)
 }
 
-interface IState<T> {
-  loading: boolean
+export interface IResult<T> {
   error?: string
   data?: T
 }
 
-export function useGetJson<T>(url: string, initialState: IState<T> = { loading: false }) {
-  const [state, setState] = useState<IState<T>>(initialState)
+export function useGetJson<T>(url: string, initialState: IResult<T> = {}) {
+  const [state, setState] = useState<IResult<T>>(initialState)
   useEffect(() => {
     request(url)
-      .then(json => setState({ loading: true, data: json.data }))
-      .catch(error => setState({ ...state, error: error.message }))
-  }, [])
+      .then(json => setState({ data: json.data }))
+      .catch(error => setState({ error: error.message }))
+  }, [url])
   return state
 }
 

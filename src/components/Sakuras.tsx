@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Alert from 'antd/lib/alert';
 import Table, { ICol } from '../libraries/Table';
-import { useDocumentTitle, useGetJson } from '../hooks';
+import DataWarpper from '../libraries/DataWarpper';
 import { formatTimeout } from '../functions/format'
+import { useDocumentTitle, useGetJson } from '../hooks';
 
 interface IRow {
   id: number
@@ -31,16 +31,18 @@ function formatLastUpdate(row: IRow) {
 
 function Sakuras() {
   useDocumentTitle('Sakuras')
-  const state = useGetJson<IRow[]>('/api/sakuras', { loading: false })
+  const sakuras = useGetJson<IRow[]>('/api/sakuras')
   return (
     <div className="Sakuras">
-      {state.error && (
-        <Alert type="error" message={state.error} />
-      )}
-      <Table
-        rows={state.data}
-        cols={getCols()}
-        sortRow={(a, b) => b.key.localeCompare(a.key)}
+      <DataWarpper
+        data={sakuras}
+        render={data => (
+          <Table
+            rows={data}
+            cols={getCols()}
+            sortRow={(a, b) => b.key.localeCompare(a.key)}
+          />
+        )}
       />
     </div>
   );

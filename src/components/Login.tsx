@@ -17,22 +17,20 @@ function Login() {
   const username = useInput('admin')
   const password = useInput('123456')
   const session = useGetJson<ISession>('/api/session')
-  if (!session.data) {
+  if (session.error) {
     return (
-      <div className="Login">
-        {session.error && (
-          <Alert type="error" message={session.error} />
-        )}
-      </div>
+      <Alert type="error" message={session.error} />
     )
   }
-  const { isLogged } = session.data
-  if (isLogged) {
-    return (
-      <div className="Login">
-        {session.data.userName} is logged.
-      </div>
-    )
+  if (session.data) {
+    const { isLogged, userName } = session.data
+    if (isLogged) {
+      return (
+        <div className="Login">
+          {userName} is logged.
+        </div>
+      )
+    }
   }
   return (
     <div className="Login">
