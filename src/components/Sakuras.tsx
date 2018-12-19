@@ -29,7 +29,7 @@ function formatLastUpdate(row: IRow) {
   return `${formatTimeout(row.modifyTime)}前`
 }
 
-function Sakuras() {
+export default function Sakuras() {
   useDocumentTitle('Sakuras')
   const sakuras = useGetJson<IRow[]>('/api/sakuras')
   return (
@@ -47,5 +47,3 @@ function Sakuras() {
     </div>
   );
 }
-
-export default Sakuras

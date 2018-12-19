@@ -12,7 +12,7 @@ interface ISession {
   userRoles: string[]
 }
 
-function Login() {
+export default function Login() {
   useDocumentTitle('Login')
   const username = useInput('admin')
   const password = useInput('123456')
@@ -51,5 +51,3 @@ function Login() {
     </div>
   )
 }
-
-export default Login

@@ -17,7 +17,7 @@ interface IProps<IRow> {
   sortRow?: (a: IRow, b: IRow) => number
 }
 
-function Table<IRow extends BaseRow>(props: IProps<IRow>) {
+export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
   if (!props.rows) {
     return null
   }
@@ -43,5 +43,3 @@ function Table<IRow extends BaseRow>(props: IProps<IRow>) {
     </RbTable>
   )
 }
-
-export default Table
