@@ -2,10 +2,12 @@ export default [
   {
     path: '/',
     exact: true,
+    title: 'Home',
     loader: () => import(/* webpackChunkName: "home" */ './components/Home')
   },
   {
     path: '/sakuras',
+    title: 'Sakuras',
     loader: () => import(/* webpackChunkName: "sakuras" */ './components/Sakuras')
   },
   {

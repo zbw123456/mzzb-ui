@@ -8,12 +8,20 @@ import './App.scss';
 const { Header, Content, Footer } = Layout;
 
 function App() {
+  const menus = routes.filter(route => Boolean(route.title))
   return (
     <div className="App">
       <Layout>
         <Header>
-          <NavLink to="/" exact={true}>Home</NavLink>
-          <NavLink to="/sakuras">Sakuras</NavLink>
+          {menus.map(menu => (
+            <NavLink
+              to={menu.path}
+              key={menu.title}
+              exact={menu.exact === true}
+            >
+              {menu.title}
+            </NavLink>
+          ))}
           <span className="right">
             <NavLink to="/login">Login</NavLink>
           </span>
