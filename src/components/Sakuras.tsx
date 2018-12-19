@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Alert from 'antd/lib/alert';
 import Table, { ICol } from '../libraries/Table';
 import { useDocumentTitle, useGetJson } from '../hooks';
@@ -14,9 +15,13 @@ interface IRow {
 function getCols(): ICol<IRow>[] {
   return [
     { key: 'idx', title: '#', format: (row, idx) => idx + 1 },
-    { key: 'title', title: 'Title', format: (row) => row.title },
+    { key: 'title', title: 'Title', format: formatLinkedTitle },
     { key: 'lastUpdate', title: 'Last Update', format: formatLastUpdate },
   ];
+}
+
+function formatLinkedTitle(row: IRow) {
+  return <Link to={`/discs/sakura/${row.key}`}>{row.title}</Link>
 }
 
 function formatLastUpdate(row: IRow) {
