@@ -27,14 +27,16 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
     <RbTable bordered={true} striped={true} hover={true}>
       <thead>
         <tr>
-          {cols.map(col => <th key={col.key}>{col.title}</th>)}
+          {cols.map(col => (
+            <th key={col.key} className={col.key}>{col.title}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
         {rows.map((row, idx) => (
           <tr key={row.key}>
             {cols.map((col) => (
-              <td key={col.key}>{col.format(row, idx)}</td>
+              <td key={col.key} className={col.key}>{col.format(row, idx)}</td>
             ))}
           </tr>
         ))
