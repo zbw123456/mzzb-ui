@@ -14,6 +14,7 @@ export interface ICol<IRow> {
 interface IProps<IRow> {
   rows?: IRow[]
   cols: ICol<IRow>[]
+  title?: string
   sortRow?: (a: IRow, b: IRow) => number
 }
 
@@ -21,10 +22,13 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
   if (!props.rows) {
     return null
   }
-  const rows = props.rows.sort(props.sortRow)
-  const cols = props.cols
+  if (props.sortRow) {
+    props.rows.sort(props.sortRow)
+  }
+  const { rows, cols, title } = props
   return (
     <RbTable bordered={true} striped={true} hover={true}>
+      {title && <caption>{props.title}</caption>}
       <thead>
         <tr>
           {cols.map(col => (

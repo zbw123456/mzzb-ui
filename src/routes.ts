@@ -11,6 +11,9 @@ export default [
     loader: () => import(/* webpackChunkName: "sakuras" */ './components/Sakuras')
   },
   {
+    path: '/discs/:findby/:search',
+    loader: () => import(/* webpackChunkName: "discs" */ './components/Discs')
+  }, {
     path: '/login',
     loader: () => import(/* webpackChunkName: "login" */ './components/Login')
   },
