@@ -2,7 +2,7 @@ import React from 'react';
 import RbTable from 'react-bootstrap/lib/Table';
 
 interface BaseRow {
-  key: string
+  id: number
 }
 
 export interface ICol<IRow> {
@@ -34,7 +34,7 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
       </thead>
       <tbody>
         {rows.map((row, idx) => (
-          <tr key={row.key}>
+          <tr key={row.id} id={`row-${row.id}`}>
             {cols.map((col) => (
               <td key={col.key} className={col.key}>{col.format(row, idx)}</td>
             ))}
