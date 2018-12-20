@@ -4,23 +4,23 @@ import Alert from 'antd/lib/alert';
 import { IResult } from '../hooks';
 
 interface IProps<T> {
-  data: IResult<T>
+  result: IResult<T>
   render: (data: T) => JSX.Element
   renderError?: (error: string) => JSX.Element,
   renderLoading?: () => JSX.Element
 }
 
 export default function DataWarpper<T>({
-  data,
+  result,
   render,
   renderError = (error: string) => <Alert type="error" message={error} />,
   renderLoading = () => <Spin delay={200} />,
 }: IProps<T>) {
-  if (data.data) {
-    return render(data.data)
+  if (result.data) {
+    return render(result.data)
   }
-  if (data.error) {
-    return renderError(data.error)
+  if (result.error) {
+    return renderError(result.error)
   }
   return renderLoading()
 }

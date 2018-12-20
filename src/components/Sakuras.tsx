@@ -36,10 +36,10 @@ export default function Sakuras() {
   return (
     <div className="Sakuras">
       <DataWarpper
-        data={sakuras}
-        render={data => (
+        result={sakuras}
+        render={rows => (
           <Table
-            rows={data}
+            rows={rows}
             cols={getCols()}
             sortRow={(a, b) => b.key.localeCompare(a.key)}
           />
