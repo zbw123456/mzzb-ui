@@ -10,6 +10,7 @@ interface IRow {
   id: number
   key: string
   title: string
+  discsSize: number
   modifyTime: number
 }
 
@@ -22,7 +23,7 @@ function getCols(): ICol<IRow>[] {
 }
 
 function formatLinkedTitle(row: IRow) {
-  return <Link to={`/discs/sakura/${row.key}`}>{row.title}</Link>
+  return <Link to={`/discs/sakura/${row.key}`}>{row.title + `(${row.discsSize})`}</Link>
 }
 
 function formatLastUpdate(row: IRow) {
