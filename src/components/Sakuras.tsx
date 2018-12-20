@@ -4,6 +4,7 @@ import Table, { ICol } from '../libraries/Table';
 import DataWarpper from '../libraries/DataWarpper';
 import { formatTimeout } from '../functions/format'
 import { useDocumentTitle, useGetJson } from '../hooks';
+import './Sakuras.scss';
 
 interface IRow {
   id: number
