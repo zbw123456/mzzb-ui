@@ -25,7 +25,7 @@ function App({ location, history }: RouteChildrenProps) {
             {menus.map(menu => (
               <Menu.Item key={menu.path}>{menu.title}</Menu.Item>
             ))}
-            <Menu.Item className='right' key="/login">Login</Menu.Item>
+            <Menu.Item className='float-right' key="/login">Login</Menu.Item>
           </Menu>
         </Header>
         <Content>

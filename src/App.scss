@@ -2,11 +2,7 @@
 
 .App {
   .ant-layout-header {
-    padding-left: 20px;
-    .right {
-      position: absolute;
-      right: 20px;
-    }
+    padding: 0 20px;
   }
   .ant-layout-content {
     background-color: white;
@@ -26,5 +22,8 @@
     input.ant-input {
       width: calc(100% - 10px);
     }
+  }
+  .float-right {
+    float: right;
   }
 }
