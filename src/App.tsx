@@ -19,8 +19,8 @@ function App({ location, history }: RouteChildrenProps) {
             theme="dark"
             mode="horizontal"
             style={{ lineHeight: '64px' }}
-            defaultSelectedKeys={[location.pathname]}
-            onSelect={param => history.push(param.key)}
+            selectedKeys={[location.pathname]}
+            onClick={param => history.push(param.key)}
           >
             {menus.map(menu => (
               <Menu.Item key={menu.path}>{menu.title}</Menu.Item>
