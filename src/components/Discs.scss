@@ -1,0 +1,92 @@
+table.table {
+  table-layout: fixed;
+  td {
+    @media screen and (max-width: 600px) {
+      font-size: 13px;
+    }
+    @media screen and (max-width: 490px) {
+      font-size: 12px;
+    }
+  }
+  td,
+  th {
+    &.idx {
+      width: 40px;
+      @media screen and (max-width: 600px) {
+        width: 35px;
+      }
+      @media screen and (max-width: 525px) {
+        display: none;
+      }
+    }
+    &.rank {
+      width: 130px;
+      @media screen and (max-width: 600px) {
+        width: 115px;
+      }
+      @media screen and (max-width: 490px) {
+        width: 105px;
+      }
+    }
+    &.addPt {
+      width: 75px;
+      @media screen and (max-width: 750px) {
+        display: none;
+      }
+    }
+    &.sumPt {
+      width: 75px;
+      @media screen and (max-width: 600px) {
+        width: 65px;
+      }
+      @media screen and (max-width: 490px) {
+        width: 60px;
+      }
+      @media screen and (max-width: 374px) {
+        display: none;
+      }
+    }
+    &.gusPt {
+      width: 75px;
+      @media screen and (max-width: 675px) {
+        display: none;
+      }
+    }
+    &.surp {
+      width: 65px;
+      @media screen and (max-width: 600px) {
+        width: 55px;
+      }
+      @media screen and (max-width: 450px) {
+        display: none;
+      }
+    }
+  }
+  td {
+    &.idx {
+      padding-left: 0;
+      padding-right: 0;
+      text-align: center;
+    }
+    &.rank {
+      word-break: keep-all;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      text-align: center;
+    }
+    &.addPt,
+    &.sumPt,
+    &.gusPt {
+      word-break: keep-all;
+      white-space: nowrap;
+      text-align: right;
+    }
+    &.surp {
+      text-align: right;
+    }
+    &.title {
+      text-align: left;
+    }
+  }
+}

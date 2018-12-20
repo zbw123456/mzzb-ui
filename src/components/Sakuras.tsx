@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Table, { ICol } from '../libraries/Table';
 import DataWarpper from '../libraries/DataWarpper';
+import Table, { ICol } from '../libraries/Table';
 import { formatTimeout } from '../functions/format'
 import { useDocumentTitle, useGetJson } from '../hooks';
 
@@ -9,13 +9,14 @@ interface IRow {
   id: number
   key: string
   title: string
+  enabled: boolean
   discsSize: number
   modifyTime: number
 }
 
 function getCols(): ICol<IRow>[] {
   return [
-    { key: 'idx', title: '#', format: (row, idx) => idx + 1 },
+    { key: 'idx', title: '#', format: (_, idx) => idx + 1 },
     { key: 'title', title: 'Title', format: formatLinkedTitle },
     { key: 'lastUpdate', title: 'Last Update', format: formatLastUpdate },
   ];
@@ -39,6 +40,7 @@ export default function Sakuras() {
         result={sakuras}
         render={rows => (
           <Table
+            mark="Sakuras"
             rows={rows}
             cols={getCols()}
             sortRow={(a, b) => b.key.localeCompare(a.key)}

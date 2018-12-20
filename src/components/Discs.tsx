@@ -2,52 +2,32 @@ import React from 'react';
 import { RouteChildrenProps } from 'react-router';
 import DataWarpper from '../libraries/DataWarpper';
 import Table, { ICol } from '../libraries/Table';
+import { formatNumber } from '../functions/format';
 import { compareFactory } from '../functions/compare';
 import { useGetJson, IResult } from '../hooks';
+import './Discs.scss';
 
-interface Match {
-  findby: string
-  search: string
-}
+const query = '?discColumns=id,asin,title,titlePc,thisRank,prevRank,todayPt,totalPt,guessPt,updateTime,surplusDays';
 
-interface Search {
-  title: string
-  discs: IDisc[]
-}
-
-interface IDisc {
-  id: number
-  key: string
-  asin: number
-  thisRank?: number
-  prevRank?: number
-  totalPt?: number
-  title: string
-  surplusDays: number
-}
-
-const query = '?discColumns=id,asin,thisRank,prevRank,todayPt,title,surplusDays';
-
-export default function Discs({ match }: RouteChildrenProps<Match, {}>) {
-  if (match) {
-    const { findby, search } = match.params
-    if (findby === 'sakura') {
-      const result = useGetJson<Search>(`/api/sakuras/key/${search}/discs` + query)
-      return renderTable(result)
-    }
+export default function Discs({ match }: RouteChildrenProps<Params, {}>) {
+  const { findby, search } = match!.params
+  if (findby === 'sakura') {
+    const result = useGetJson<Search>(`/api/sakuras/key/${search}/discs` + query)
+    return renderTable(result, `${findby}-${search}`)
   }
   return <>Nothing</>
 }
 
-function renderTable(result: IResult<Search>) {
+function renderTable(result: IResult<Search>, markString: string) {
   return (
     <DataWarpper
       result={result}
       render={search => (
         <Table
-          title={search.title}
-          rows={search.discs}
+          mark={`Discs-${markString}`}
           cols={getCols()}
+          rows={search.discs}
+          title={search.title}
           sortRow={compareFactory<IDisc, number>({
             apply: disc => disc.thisRank,
             empty: rank => rank === undefined,
@@ -61,20 +41,110 @@ function renderTable(result: IResult<Search>) {
 
 function getCols(): ICol<IDisc>[] {
   return [
-    { key: 'idx', title: '#', format: (_, idx) => idx + 1 },
-    { key: 'rank', title: 'Rank', format: formatRank },
-    { key: 'title', title: 'Title', format: (row) => row.title },
+    {
+      key: 'idx',
+      title: '#',
+      format: (_, idx) => idx + 1,
+    },
+    {
+      key: 'rank',
+      title: '日亚排名',
+      format: formatRank,
+      compare: compareFactory<IDisc, number>({
+        apply: disc => disc.thisRank,
+        empty: rank => rank === undefined,
+        compare: (a, b) => a - b
+      }),
+      tdClass: rankTdClass
+    },
+    {
+      key: 'addPt',
+      title: '日增',
+      format: (disc) => `${(disc.todayPt || '----')} pt`,
+      compare: comparePt(disc => disc.todayPt),
+    },
+    {
+      key: 'sumPt',
+      title: '累积',
+      format: (disc) => `${(disc.totalPt || '----')} pt`,
+      compare: comparePt(disc => disc.totalPt),
+    },
+    {
+      key: 'gusPt',
+      title: '预测',
+      format: (disc) => `${(disc.guessPt || '----')} pt`,
+      compare: comparePt(disc => disc.guessPt),
+    },
+    {
+      key: 'surp',
+      title: '发售',
+      format: (disc) => `${disc.surplusDays} 天`,
+      compare: (a, b) => {
+        if (a.surplusDays !== b.surplusDays) {
+          return a.surplusDays - b.surplusDays
+        }
+        return formatTitle(a).localeCompare(formatTitle(b))
+      },
+    },
+    {
+      key: 'title',
+      title: '碟片标题',
+      format: formatTitle,
+      compare: (a, b) => formatTitle(a).localeCompare(formatTitle(b)),
+    },
   ]
 }
 
 function formatRank(row: IDisc) {
-  let mark = 'x'
-  if (row.thisRank === row.prevRank) {
-    mark = '-'
-  } else if (row.thisRank && !row.prevRank) {
-    mark = 'new'
-  } else if (row.thisRank && row.prevRank) {
-    mark = row.thisRank < row.prevRank ? '↑' : '↓'
+  const thisRank = row.thisRank ? formatNumber(row.thisRank, '****') : '----'
+  const prevRank = row.prevRank ? formatNumber(row.prevRank, '****') : '----'
+  return `${thisRank}位/${prevRank}位`
+}
+
+function comparePt(apply: (disc: IDisc) => number | undefined) {
+  return compareFactory<IDisc, number>({
+    apply: apply,
+    empty: value => value === undefined,
+    compare: (a, b) => b - a
+  })
+}
+function formatTitle(disc: IDisc) {
+  return disc.titlePc || disc.title
+}
+
+function rankTdClass(disc: IDisc) {
+  const HOUR = 3600 * 1000
+  if (disc.updateTime) {
+    const timeout = Date.now() - disc.updateTime
+    if (timeout < HOUR) {
+      return 'success'
+    } else if (timeout > 6.1 * HOUR) {
+      return 'warning'
+    }
   }
-  return `${row.thisRank || '----'}/${row.prevRank || '----'}(${mark})`
+  return ''
+}
+
+interface Params {
+  findby: string
+  search: string
+}
+
+interface Search {
+  title: string
+  discs: IDisc[]
+}
+
+interface IDisc {
+  id: number
+  asin: string
+  title: string
+  titlePc?: string
+  thisRank?: number
+  prevRank?: number
+  todayPt?: number
+  totalPt?: number
+  guessPt?: number
+  updateTime?: number
+  surplusDays: number
 }
