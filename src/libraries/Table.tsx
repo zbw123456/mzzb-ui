@@ -81,11 +81,19 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
 
   const buttons = state.copyMode ? copyButtons : viewButtons;
 
-  function setSelected(id: number, checked: boolean) {
+  function doSelectRow(id: number, checked: boolean) {
     if (checked) {
       setState({ ...state, selected: [...state.selected, id] })
     } else {
       setState({ ...state, selected: state.selected.filter(rowId => rowId !== id) })
+    }
+  }
+
+  function doSelectAll(checked: boolean) {
+    if (checked) {
+      setState({ ...state, selected: rows.map(row => row.id) })
+    } else {
+      setState({ ...state, selected: [] })
     }
   }
 
@@ -94,7 +102,11 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
       {title && <caption>{props.title} {copyFmt && buttons}</caption>}
       <thead>
         <tr>
-          {state.copyMode && <th className="select"><CheckBox /></th>}
+          {state.copyMode && (
+            <th className="select">
+              <CheckBox onChange={e => doSelectAll(e.target.checked)} />
+            </th>
+          )}
           {cols.map(col => (
             <th
               key={col.key}
@@ -108,9 +120,14 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
       <tbody>
         {rows.map((row, idx) => (
           <tr key={row.id} id={`row-${row.id}`} className={trClass && trClass(row)}>
-            {state.copyMode && <td className="select">
-              <CheckBox onChange={e => setSelected(row.id, e.target.checked)} />
-            </td>}
+            {state.copyMode && (
+              <td className="select">
+                <CheckBox
+                  checked={state.selected.indexOf(row.id) >= 0}
+                  onChange={e => doSelectRow(row.id, e.target.checked)}
+                />
+              </td>
+            )}
             {cols.map((col) => (
               <td key={col.key} className={tdClass(col, row)}>
                 {col.format(row, idx)}
