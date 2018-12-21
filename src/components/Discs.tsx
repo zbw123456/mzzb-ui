@@ -33,6 +33,16 @@ function renderTable(result: IResult<Search>, markString: string) {
             empty: rank => rank === undefined,
             compare: (a, b) => a - b
           })}
+          copyFmt={((disc, idx) => {
+            let text = `${idx + 1})`
+              + ` ${formatRank(disc)}`
+              + ` 增${(disc.todayPt || 0)}pt`
+              + ` 共${(disc.totalPt || 0)}pt`
+              + ` 预${(disc.guessPt || 0)}pt`
+              + ` 剩${disc.surplusDays}天`
+              + ` [${formatTitle(disc)}]`
+            return text;
+          })}
         />
       )}
     />
