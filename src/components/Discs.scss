@@ -12,6 +12,7 @@ table.table {
   th {
     &.idx {
       width: 40px;
+      text-align: center;
       @media screen and (max-width: 600px) {
         width: 35px;
       }
@@ -66,7 +67,6 @@ table.table {
     &.idx {
       padding-left: 0;
       padding-right: 0;
-      text-align: center;
     }
     &.rank {
       word-break: keep-all;
