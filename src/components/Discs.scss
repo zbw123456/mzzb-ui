@@ -1,92 +1,80 @@
-table.table {
-  table-layout: fixed;
-  td {
-    @media screen and (max-width: 600px) {
-      font-size: 13px;
-    }
-    @media screen and (max-width: 490px) {
-      font-size: 12px;
-    }
-  }
-  td,
-  th {
-    &.idx {
-      width: 40px;
-      text-align: center;
-      @media screen and (max-width: 600px) {
-        width: 35px;
+.Discs {
+  table.table {
+    table-layout: fixed;
+    td,
+    th {
+      &.idx {
+        width: 40px;
+        text-align: center;
+        @media screen and (max-width: 600px) {
+          width: 35px;
+        }
+        @media screen and (max-width: 400px) {
+          display: none;
+        }
       }
-      @media screen and (max-width: 525px) {
-        display: none;
+      &.rank {
+        width: 130px;
+        @media screen and (max-width: 600px) {
+          width: 115px;
+        }
       }
-    }
-    &.rank {
-      width: 130px;
-      @media screen and (max-width: 600px) {
-        width: 115px;
+      &.addPt {
+        width: 75px;
+        @media screen and (max-width: 750px) {
+          display: none;
+        }
       }
-      @media screen and (max-width: 490px) {
-        width: 105px;
+      &.sumPt {
+        width: 75px;
+        @media screen and (max-width: 600px) {
+          width: 68px;
+        }
+        @media screen and (max-width: 500px) {
+          display: none;
+        }
       }
-    }
-    &.addPt {
-      width: 75px;
-      @media screen and (max-width: 750px) {
-        display: none;
+      &.gusPt {
+        width: 75px;
+        @media screen and (max-width: 675px) {
+          display: none;
+        }
       }
-    }
-    &.sumPt {
-      width: 75px;
-      @media screen and (max-width: 600px) {
+      &.surp {
         width: 65px;
-      }
-      @media screen and (max-width: 490px) {
-        width: 60px;
-      }
-      @media screen and (max-width: 374px) {
-        display: none;
-      }
-    }
-    &.gusPt {
-      width: 75px;
-      @media screen and (max-width: 675px) {
-        display: none;
+        @media screen and (max-width: 600px) {
+          width: 55px;
+        }
+        @media screen and (max-width: 550px) {
+          display: none;
+        }
       }
     }
-    &.surp {
-      width: 65px;
-      @media screen and (max-width: 600px) {
-        width: 55px;
+    td {
+      &.idx {
+        padding-left: 0;
+        padding-right: 0;
       }
-      @media screen and (max-width: 450px) {
-        display: none;
+      &.rank {
+        word-break: keep-all;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: center;
       }
-    }
-  }
-  td {
-    &.idx {
-      padding-left: 0;
-      padding-right: 0;
-    }
-    &.rank {
-      word-break: keep-all;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      text-align: center;
-    }
-    &.addPt,
-    &.sumPt,
-    &.gusPt {
-      word-break: keep-all;
-      white-space: nowrap;
-      text-align: right;
-    }
-    &.surp {
-      text-align: right;
-    }
-    &.title {
-      text-align: left;
+      &.addPt,
+      &.sumPt,
+      &.gusPt {
+        word-break: keep-all;
+        white-space: nowrap;
+        text-align: right;
+      }
+      &.surp {
+        text-align: right;
+      }
+      &.title {
+        text-align: left;
+      }
     }
   }
 }

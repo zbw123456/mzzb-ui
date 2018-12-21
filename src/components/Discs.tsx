@@ -20,32 +20,34 @@ export default function Discs({ match }: RouteChildrenProps<Params, {}>) {
 
 function renderTable(result: IResult<Search>, markString: string) {
   return (
-    <DataWarpper
-      result={result}
-      render={search => (
-        <Table
-          mark={`Discs-${markString}`}
-          cols={getCols()}
-          rows={search.discs}
-          title={search.title}
-          sortRow={compareFactory<IDisc, number>({
-            apply: disc => disc.thisRank,
-            empty: rank => rank === undefined,
-            compare: (a, b) => a - b
-          })}
-          copyFmt={((disc, idx) => {
-            let text = `${idx + 1})`
-              + ` ${formatRank(disc)}`
-              + ` 增${(disc.todayPt || 0)}pt`
-              + ` 共${(disc.totalPt || 0)}pt`
-              + ` 预${(disc.guessPt || 0)}pt`
-              + ` 剩${disc.surplusDays}天`
-              + ` [${formatTitle(disc)}]`
-            return text;
-          })}
-        />
-      )}
-    />
+    <div className="Discs">
+      <DataWarpper
+        result={result}
+        render={search => (
+          <Table
+            mark={`Discs-${markString}`}
+            cols={getCols()}
+            rows={search.discs}
+            title={search.title}
+            sortRow={compareFactory<IDisc, number>({
+              apply: disc => disc.thisRank,
+              empty: rank => rank === undefined,
+              compare: (a, b) => a - b
+            })}
+            copyFmt={((disc, idx) => {
+              let text = `${idx + 1})`
+                + ` ${formatRank(disc)}`
+                + ` 增${(disc.todayPt || 0)}pt`
+                + ` 共${(disc.totalPt || 0)}pt`
+                + ` 预${(disc.guessPt || 0)}pt`
+                + ` 剩${disc.surplusDays}天`
+                + ` [${formatTitle(disc)}]`
+              return text;
+            })}
+          />
+        )}
+      />
+    </div>
   );
 }
 
@@ -70,25 +72,25 @@ function getCols(): ICol<IDisc>[] {
     {
       key: 'addPt',
       title: '日增',
-      format: (disc) => `${(disc.todayPt || '----')} pt`,
+      format: (disc) => `${(disc.todayPt || '----')}点`,
       compare: comparePt(disc => disc.todayPt),
     },
     {
       key: 'sumPt',
       title: '累积',
-      format: (disc) => `${(disc.totalPt || '----')} pt`,
+      format: (disc) => `${(disc.totalPt || '----')}点`,
       compare: comparePt(disc => disc.totalPt),
     },
     {
       key: 'gusPt',
       title: '预测',
-      format: (disc) => `${(disc.guessPt || '----')} pt`,
+      format: (disc) => `${(disc.guessPt || '----')}点`,
       compare: comparePt(disc => disc.guessPt),
     },
     {
       key: 'surp',
       title: '发售',
-      format: (disc) => `${disc.surplusDays} 天`,
+      format: (disc) => `${disc.surplusDays}天`,
       compare: (a, b) => {
         if (a.surplusDays !== b.surplusDays) {
           return a.surplusDays - b.surplusDays
