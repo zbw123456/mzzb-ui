@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import RbTable from 'react-bootstrap/lib/Table';
+import Button from 'antd/lib/button';
+import CheckBox from 'antd/lib/checkbox';
+import message from 'antd/lib/message';
 import classNames from 'classnames';
+import copy from 'copy-to-clipboard';
 import './Table.scss';
 
 interface BaseRow {
@@ -22,18 +26,21 @@ interface IProps<IRow> {
   title?: string
   trClass?: (t: IRow) => string
   sortRow?: (a: IRow, b: IRow) => number
+  copyFmt?: (t: IRow, i: number) => String
 }
 
 interface IState {
   sortKey?: string
   sortAsc?: boolean
+  copyMode: boolean
+  selected: number[]
 }
 
 export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
-  const { mark, rows, cols, title, trClass, sortRow } = props
+  const { mark, rows, cols, title, trClass, sortRow, copyFmt } = props
   const [state, setState] = useState<IState>(() => {
     const stateText = sessionStorage[`table-state-${mark}`]
-    return stateText ? JSON.parse(stateText) : {}
+    return stateText ? JSON.parse(stateText) : { copyMode: false, selected: [] }
   })
 
   if (state.sortKey) {
@@ -48,11 +55,46 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
     rows.sort(sortRow)
   }
 
+  const viewButtons = (
+    <Button.Group>
+      <Button onClick={() => setState({ ...state, copyMode: true })}>复制模式</Button>
+    </Button.Group >
+  )
+
+  const copyButtons = (
+    <Button.Group>
+      <Button onClick={() => doCopy()}>复制</Button>
+      <Button onClick={() => setState({ ...state, copyMode: false })}>取消</Button>
+    </Button.Group>
+  )
+
+  function doCopy() {
+    const text = state.selected.map((id, idx) => {
+      return copyFmt!(rows.find(row => row.id === id)!, idx)
+    }).join('\n')
+    if (copy(text)) {
+      message.success('已复制到剪贴板')
+    } else {
+      message.success('复制失败')
+    }
+  }
+
+  const buttons = state.copyMode ? copyButtons : viewButtons;
+
+  function setSelected(id: number, checked: boolean) {
+    if (checked) {
+      setState({ ...state, selected: [...state.selected, id] })
+    } else {
+      setState({ ...state, selected: state.selected.filter(rowId => rowId !== id) })
+    }
+  }
+
   return (
     <RbTable bordered={true} striped={true} hover={true}>
-      {title && <caption>{props.title}</caption>}
+      {title && <caption>{props.title} {copyFmt && buttons}</caption>}
       <thead>
         <tr>
+          {state.copyMode && <th className="select"><CheckBox /></th>}
           {cols.map(col => (
             <th
               key={col.key}
@@ -66,6 +108,9 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
       <tbody>
         {rows.map((row, idx) => (
           <tr key={row.id} id={`row-${row.id}`} className={trClass && trClass(row)}>
+            {state.copyMode && <td className="select">
+              <CheckBox onChange={e => setSelected(row.id, e.target.checked)} />
+            </td>}
             {cols.map((col) => (
               <td key={col.key} className={tdClass(col, row)}>
                 {col.format(row, idx)}
