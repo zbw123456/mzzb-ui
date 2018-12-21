@@ -31,48 +31,53 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
   const buttons = state.copyMode ? copyButtons() : viewButtons();
 
   return (
-    <RbTable bordered={true} striped={true} hover={true}>
-      {title && <caption>{props.title} {copyFmt && buttons}</caption>}
-      <thead>
-        <tr>
-          {state.copyMode && (
-            <th className="select">
-              <CheckBox onChange={e => doSelectAll(e.target.checked)} />
-            </th>
-          )}
-          {cols.map(col => (
-            <th
-              key={col.key}
-              children={col.title}
-              className={thClass(col)}
-              onClick={col.compare && (() => doClickTh(col))}
-            />
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, idx) => (
-          <tr
-            key={row.id}
-            id={`row-${row.id}`}
-            className={trClass && trClass(row)}
-            onClick={() => state.copyMode && doToggleRow(row.id)}
-          >
+    <div className="table-warpper">
+      <div className="table-caption">
+        <span className="table-title">{title}</span>
+        <span className="table-buttons">{buttons}</span>
+      </div>
+      <RbTable bordered={true} striped={true} hover={true}>
+        <thead>
+          <tr>
             {state.copyMode && (
-              <td className="select">
-                <CheckBox checked={state.selected.has(row.id)} />
-              </td>
+              <th className="select">
+                <CheckBox onChange={e => doSelectAll(e.target.checked)} />
+              </th>
             )}
-            {cols.map((col) => (
-              <td key={col.key} className={tdClass(col, row)}>
-                {col.format(row, idx)}
-              </td>
+            {cols.map(col => (
+              <th
+                key={col.key}
+                children={col.title}
+                className={thClass(col)}
+                onClick={col.compare && (() => doClickTh(col))}
+              />
             ))}
           </tr>
-        ))
-        }
-      </tbody>
-    </RbTable>
+        </thead>
+        <tbody>
+          {rows.map((row, idx) => (
+            <tr
+              key={row.id}
+              id={`row-${row.id}`}
+              className={trClass && trClass(row)}
+              onClick={() => state.copyMode && doToggleRow(row.id)}
+            >
+              {state.copyMode && (
+                <td className="select">
+                  <CheckBox checked={state.selected.has(row.id)} />
+                </td>
+              )}
+              {cols.map((col) => (
+                <td key={col.key} className={tdClass(col, row)}>
+                  {col.format(row, idx)}
+                </td>
+              ))}
+            </tr>
+          ))
+          }
+        </tbody>
+      </RbTable>
+    </div>
   )
 
   function viewButtons() {
