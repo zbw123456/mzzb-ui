@@ -127,7 +127,6 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
   }
 
   function doSelectRow(id: number, checked: boolean) {
-    console.log(id, checked)
     if (checked) {
       setState(immer(state, draft => {
         draft.selected.add(id)
