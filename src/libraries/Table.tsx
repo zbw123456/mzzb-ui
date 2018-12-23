@@ -51,14 +51,7 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
       <table className="table table-striped table-bordered table-hover">
         <thead>
           <tr>
-            {copyMode && (
-              <th className="select">
-                <CheckBox
-                  checked={selected.size === rows.length}
-                  onChange={e => doSelectAll(e.target.checked)}
-                />
-              </th>
-            )}
+            {copyMode && renderSelectTh()}
             {cols.map(col => (
               <th
                 key={col.key}
@@ -77,11 +70,7 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
               className={trClass && trClass(row)}
               onClick={() => copyMode && doToggleRow(row.id)}
             >
-              {copyMode && (
-                <td className="select">
-                  <CheckBox checked={selected.has(row.id)} />
-                </td>
-              )}
+              {copyMode && renderSelectTd(row.id)}
               {cols.map((col) => (
                 <td key={col.key} className={tdClass(col, row)}>
                   {col.format(row, idx)}
@@ -95,6 +84,25 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
     </div>
   )
 
+  function renderSelectTh() {
+    return (
+      <th className="select">
+        <CheckBox
+          checked={selected.size === rows.length}
+          onChange={e => doSelectAll(e.target.checked)}
+        />
+      </th>
+    )
+  }
+
+  function renderSelectTd(rowId: number) {
+    return (
+      <td className="select">
+        <CheckBox checked={selected.has(rowId)} />
+      </td>
+    )
+  }
+
   function renderCaption() {
     return (
       <div className="table-caption">
@@ -103,20 +111,27 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
         )}
         {copyFmt && (
           <span className="table-buttons">
-            {copyMode && (
-              <Button.Group>
-                <Button onClick={doCopy}>复制</Button>
-                <Button onClick={() => setCopyMode(false)}>取消</Button>
-              </Button.Group>
-            )}
-            {!copyMode && (
-              <Button.Group>
-                <Button onClick={() => setCopyMode(true)}>复制排名</Button>
-              </Button.Group >
-            )}
+            {!copyMode ? renderViewButtons() : renderCopyButtons}
           </span>
         )}
       </div>
+    )
+  }
+
+  function renderViewButtons() {
+    return (
+      <Button.Group>
+        <Button onClick={() => setCopyMode(true)}>复制排名</Button>
+      </Button.Group >
+    )
+  }
+
+  function renderCopyButtons() {
+    return (
+      <Button.Group>
+        <Button onClick={doCopy}>复制</Button>
+        <Button onClick={() => setCopyMode(false)}>取消</Button>
+      </Button.Group>
     )
   }
 
