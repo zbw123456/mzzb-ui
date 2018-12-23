@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import RbTable from 'react-bootstrap/lib/Table';
 import Button from 'antd/lib/button';
 import CheckBox from 'antd/lib/checkbox';
 import message from 'antd/lib/message';
@@ -7,174 +6,6 @@ import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import immer from 'immer';
 import './Table.scss';
-
-export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
-  const { mark, rows, cols, title, trClass, sortRow, copyFmt } = props
-  const [state, setState] = useState<IState>(() => {
-    const stateText = sessionStorage[`table-state-${mark}`]
-    const loadState = JSON.parse(stateText || '{}');
-    return { ...loadState, copyMode: false, selected: new Set() }
-  })
-
-  if (state.sortKey) {
-    const sortCol = cols.find(col => col.key === state.sortKey)
-    if (sortCol) {
-      rows.sort(sortCol.compare)
-    }
-    if (state.sortAsc === false) {
-      rows.reverse()
-    }
-  } else if (sortRow) {
-    rows.sort(sortRow)
-  }
-
-  const buttons = state.copyMode ? copyButtons() : viewButtons();
-
-  return (
-    <div className="table-warpper">
-      {(title || copyFmt) && (
-        <div className="table-caption">
-          {title && (
-            <span className="table-title">{title}</span>
-          )}
-          {copyFmt && (
-            <span className="table-buttons">{buttons}</span>
-          )}
-        </div>
-      )}
-      <RbTable bordered={true} striped={true} hover={true}>
-        <thead>
-          <tr>
-            {state.copyMode && (
-              <th className="select">
-                <CheckBox onChange={e => doSelectAll(e.target.checked)} />
-              </th>
-            )}
-            {cols.map(col => (
-              <th
-                key={col.key}
-                children={col.title}
-                className={thClass(col)}
-                onClick={col.compare && (() => doClickTh(col))}
-              />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, idx) => (
-            <tr
-              key={row.id}
-              id={`row-${row.id}`}
-              className={trClass && trClass(row)}
-              onClick={() => state.copyMode && doToggleRow(row.id)}
-            >
-              {state.copyMode && (
-                <td className="select">
-                  <CheckBox checked={state.selected.has(row.id)} />
-                </td>
-              )}
-              {cols.map((col) => (
-                <td key={col.key} className={tdClass(col, row)}>
-                  {col.format(row, idx)}
-                </td>
-              ))}
-            </tr>
-          ))
-          }
-        </tbody>
-      </RbTable>
-    </div>
-  )
-
-  function viewButtons() {
-    return (
-      <Button.Group>
-        <Button onClick={() => setCopyMode(true)}>复制模式</Button>
-      </Button.Group >
-    )
-  }
-
-  function copyButtons() {
-    return (
-      <Button.Group>
-        <Button onClick={doCopy}>复制</Button>
-        <Button onClick={() => setCopyMode(false)}>取消</Button>
-      </Button.Group>
-    )
-  }
-
-  function setCopyMode(copyMode: boolean) {
-    setState(immer(state, draft => {
-      draft.copyMode = copyMode
-    }))
-  }
-
-  function doCopy() {
-    let text = '', idx = 0
-    state.selected.forEach(id => {
-      text += copyFmt!(rows.find(row => row.id === id)!, idx++) + '\n'
-    })
-    if (copy(text)) {
-      message.success('已复制到剪贴板')
-    } else {
-      message.success('复制失败')
-    }
-    setCopyMode(false)
-  }
-
-  function doToggleRow(id: number) {
-    doSelectRow(id, !state.selected.has(id))
-  }
-
-  function doSelectRow(id: number, checked: boolean) {
-    if (checked) {
-      setState(immer(state, draft => {
-        draft.selected.add(id)
-      }))
-    } else {
-      setState(immer(state, draft => {
-        draft.selected.delete(id)
-      }))
-    }
-  }
-
-  function doSelectAll(checked: boolean) {
-    if (checked) {
-      setState(immer(state, draft => {
-        draft.selected = new Set(rows.map(row => row.id))
-      }))
-    } else {
-      setState(immer(state, draft => {
-        draft.selected = new Set()
-      }))
-    }
-  }
-
-  function doClickTh(col: ICol<IRow>) {
-    const next = immer(state, draft => {
-      if (state.sortKey === col.key) {
-        draft.sortAsc = state.sortAsc !== true
-      } else {
-        draft.sortAsc = true
-        draft.sortKey = col.key
-      }
-    })
-    setState(next)
-    sessionStorage[`table-state-${mark}`] = JSON.stringify(next)
-  }
-
-  function thClass(col: ICol<IRow>) {
-    return classNames(col.key, {
-      sortable: col.compare !== undefined,
-      asc: state.sortKey === col.key && state.sortAsc === true,
-      desc: state.sortKey === col.key && state.sortAsc === false,
-    })
-  }
-
-  function tdClass(col: ICol<IRow>, row: IRow) {
-    return classNames(col.key, col.tdClass && col.tdClass(row))
-  }
-}
 
 interface BaseRow {
   id: number
@@ -194,8 +25,8 @@ interface IProps<IRow> {
   cols: ICol<IRow>[]
   title?: string
   trClass?: (t: IRow) => string
-  sortRow?: (a: IRow, b: IRow) => number
   copyFmt?: (t: IRow, i: number) => String
+  defaultSort?: ((a: IRow, b: IRow) => number)
 }
 
 interface IState {
@@ -203,4 +34,190 @@ interface IState {
   sortAsc?: boolean
   copyMode: boolean
   selected: Set<number>
+}
+
+export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
+  const { mark, rows, cols, title, trClass, copyFmt, defaultSort } = props
+  const [state, setState] = useState<IState>(() => {
+    return loadState(mark, { copyMode: false, selected: new Set() })
+  })
+  const { sortKey, sortAsc, copyMode, selected } = state
+
+  applySort()
+
+  return (
+    <div className="table-warpper">
+      {(title || copyFmt) && renderCaption()}
+      <table className="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            {copyMode && (
+              <th className="select">
+                <CheckBox
+                  checked={selected.size === rows.length}
+                  onChange={e => doSelectAll(e.target.checked)}
+                />
+              </th>
+            )}
+            {cols.map(col => (
+              <th
+                key={col.key}
+                children={col.title}
+                className={thClass(col)}
+                onClick={col.compare && (() => thClick(col))}
+              />
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, idx) => (
+            <tr
+              key={row.id}
+              id={`row-${row.id}`}
+              className={trClass && trClass(row)}
+              onClick={() => copyMode && doToggleRow(row.id)}
+            >
+              {copyMode && (
+                <td className="select">
+                  <CheckBox checked={selected.has(row.id)} />
+                </td>
+              )}
+              {cols.map((col) => (
+                <td key={col.key} className={tdClass(col, row)}>
+                  {col.format(row, idx)}
+                </td>
+              ))}
+            </tr>
+          ))
+          }
+        </tbody>
+      </table>
+    </div>
+  )
+
+  function renderCaption() {
+    return (
+      <div className="table-caption">
+        {title && (
+          <span className="table-title">{title}</span>
+        )}
+        {copyFmt && (
+          <span className="table-buttons">
+            {copyMode && (
+              <Button.Group>
+                <Button onClick={doCopy}>复制</Button>
+                <Button onClick={() => setCopyMode(false)}>取消</Button>
+              </Button.Group>
+            )}
+            {!copyMode && (
+              <Button.Group>
+                <Button onClick={() => setCopyMode(true)}>复制排名</Button>
+              </Button.Group >
+            )}
+          </span>
+        )}
+      </div>
+    )
+  }
+
+  function applySort() {
+    if (sortKey) {
+      const sortCol = cols.find(col => col.key === sortKey)
+      if (sortCol) {
+        rows.sort(sortCol.compare)
+      }
+      if (sortAsc === false) {
+        rows.reverse()
+      }
+    } else if (defaultSort) {
+      rows.sort(defaultSort)
+    }
+  }
+
+  function setCopyMode(copyMode: boolean) {
+    update(draft => {
+      draft.copyMode = copyMode
+    })
+  }
+
+  function doCopy() {
+    let text = '', idx = 0
+    selected.forEach(id => {
+      text += copyFmt!(rows.find(row => row.id === id)!, idx++) + '\n'
+    })
+    if (copy(text)) {
+      message.success('已复制到剪贴板')
+
+    } else {
+      message.success('复制失败')
+    }
+  }
+
+  function doToggleRow(id: number) {
+    doSelectRow(id, !selected.has(id))
+  }
+
+  function doSelectRow(id: number, checked: boolean) {
+    update(draft => {
+      if (checked) {
+        draft.selected.add(id)
+      } else {
+        draft.selected.delete(id)
+      }
+    })
+  }
+
+  function doSelectAll(checked: boolean) {
+    update(draft => {
+      if (checked) {
+        draft.selected = new Set(rows.map(row => row.id))
+      } else {
+        draft.selected = new Set()
+      }
+    })
+  }
+
+  function thClick(col: ICol<IRow>) {
+    update(draft => {
+      if (sortKey === col.key) {
+        draft.sortAsc = draft.sortAsc !== true
+      } else {
+        draft.sortAsc = true
+        draft.sortKey = col.key
+      }
+    })
+  }
+
+  function thClass(col: ICol<IRow>) {
+    return classNames(col.key, {
+      sortable: col.compare !== undefined,
+      asc: sortKey === col.key && sortAsc === true,
+      desc: sortKey === col.key && sortAsc === false,
+    })
+  }
+
+  function tdClass(col: ICol<IRow>, row: IRow) {
+    return classNames(col.key, col.tdClass && col.tdClass(row))
+  }
+
+  function update(updater: (draft: IState) => void) {
+    const nextState = immer(state, updater)
+    setState(nextState)
+    saveState(mark, nextState)
+  }
+}
+
+function saveState(mark: string, state: IState) {
+  const saveState = { ...state, selected: [...state.selected] }
+  sessionStorage[`table-state-${mark}`] = JSON.stringify(saveState)
+}
+
+function loadState(mark: string, initState: IState): IState {
+  const stateText = sessionStorage[`table-state-${mark}`]
+  const loadState = JSON.parse(stateText || '{}')
+  const nextState = { ...initState, ...loadState }
+  if (Array.isArray(loadState.selected)) {
+    nextState.selected = new Set(loadState.selected)
+  }
+  return nextState
 }

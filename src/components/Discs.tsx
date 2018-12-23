@@ -18,18 +18,18 @@ export default function Discs({ match }: RouteChildrenProps<Params, {}>) {
   return <>Nothing</>
 }
 
-function renderTable(result: IResult<Search>, markString: string) {
+function renderTable(result: IResult<Search>, mark: string) {
   return (
     <div className="Discs">
       <DataWarpper
         result={result}
         render={search => (
           <Table
-            mark={`Discs-${markString}`}
+            mark={`Discs-${mark}`}
             cols={getCols()}
             rows={search.discs}
             title={search.title}
-            sortRow={compareFactory<IDisc, number>({
+            defaultSort={compareFactory<IDisc, number>({
               apply: disc => disc.thisRank,
               empty: rank => rank === undefined,
               compare: (a, b) => a - b
