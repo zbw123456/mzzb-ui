@@ -137,12 +137,12 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
 
   function applySort() {
     if (sortKey) {
-      const sortCol = cols.find(col => col.key === sortKey)
-      if (sortCol) {
-        rows.sort(sortCol.compare)
-      }
-      if (sortAsc === false) {
-        rows.reverse()
+      const findCol = cols.find(col => col.key === sortKey)
+      if (findCol && findCol.compare) {
+        const compare = findCol.compare
+        rows.sort((a, b) => {
+          return sortAsc ? compare(a, b) : -compare(a, b)
+        })
       }
     } else if (defaultSort) {
       rows.sort(defaultSort)
