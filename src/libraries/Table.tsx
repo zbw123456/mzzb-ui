@@ -111,7 +111,7 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
         )}
         {copyFmt && (
           <span className="table-buttons">
-            {!copyMode ? renderViewButtons() : renderCopyButtons}
+            {!copyMode ? renderViewButtons() : renderCopyButtons()}
           </span>
         )}
       </div>
