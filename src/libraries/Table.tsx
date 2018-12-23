@@ -32,10 +32,16 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
 
   return (
     <div className="table-warpper">
-      <div className="table-caption">
-        <span className="table-title">{title}</span>
-        <span className="table-buttons">{buttons}</span>
-      </div>
+      {(title || copyFmt) && (
+        <div className="table-caption">
+          {title && (
+            <span className="table-title">{title}</span>
+          )}
+          {copyFmt && (
+            <span className="table-buttons">{buttons}</span>
+          )}
+        </div>
+      )}
       <RbTable bordered={true} striped={true} hover={true}>
         <thead>
           <tr>
