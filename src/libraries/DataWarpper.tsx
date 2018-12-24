@@ -6,16 +6,10 @@ import { Result } from '../hooks/useGetJson';
 
 interface IProps<T> {
   result: Result<T>
-  render: (data: T) => JSX.Element
+  render: (data: T, loading: boolean) => JSX.Element
   renderError?: (error: string) => JSX.Element,
   renderLoading?: (first: boolean) => JSX.Element
-  renderRefresh?: (refresh: () => void) => JSX.Element,
-}
-
-function defaultRenderLoading(first: boolean) {
-  return (
-    <Spin delay={first ? 200 : 0} />
-  )
+  renderRefresh?: (refresh: () => void, loading: boolean) => JSX.Element,
 }
 
 function defaultRenderError(error: string) {
@@ -24,11 +18,11 @@ function defaultRenderError(error: string) {
   )
 }
 
-function defaultRenderRefresh(refresh: () => void) {
+function defaultRenderRefresh(refresh: () => void, loading: boolean) {
   return (
     <div style={{ padding: 5 }}>
       <span style={{ margin: 5 }}>未能获取到数据</span>
-      <Button onClick={refresh}>尝试重新获取</Button>
+      <Button loading={loading} onClick={refresh}>尝试重新获取</Button>
     </div>
   )
 }
@@ -37,15 +31,13 @@ export default function DataWarpper<T>({
   result: { loading, error, data, refresh },
   render,
   renderError = defaultRenderError,
-  renderLoading = defaultRenderLoading,
   renderRefresh = defaultRenderRefresh,
 }: IProps<T>) {
   return (
     <div className="DataWarpper">
-      {loading && renderLoading(!error && !data)}
       {error && renderError(error)}
-      {data && render(data)}
-      {!data && error && refresh && renderRefresh(refresh)}
+      {data && render(data, loading)}
+      {!data && error && refresh && renderRefresh(refresh, loading)}
     </div>
   )
 }
