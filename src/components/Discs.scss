@@ -1,60 +1,35 @@
+@import './function';
 .Discs {
-  table.table {
+  .table {
     table-layout: fixed;
     td,
     th {
       &.idx {
-        width: 40px;
-        text-align: center;
-        @media screen and (max-width: 600px) {
-          width: 35px;
-        }
-        @media screen and (max-width: 400px) {
-          display: none;
-        }
+        @include columnCenter();
+        @include columnWidth(40px, 35px);
+        @include columnHide(400px);
       }
       &.rank {
-        width: 130px;
-        @media screen and (max-width: 600px) {
-          width: 115px;
-        }
+        @include columnWidth(130px, 115px);
       }
       &.addPt {
         width: 75px;
-        @media screen and (max-width: 750px) {
-          display: none;
-        }
+        @include columnHide(750px);
       }
       &.sumPt {
-        width: 75px;
-        @media screen and (max-width: 600px) {
-          width: 68px;
-        }
-        @media screen and (max-width: 500px) {
-          display: none;
-        }
+        @include columnWidth(75px, 68px);
+        @include columnHide(500px);
       }
       &.gusPt {
         width: 75px;
-        @media screen and (max-width: 675px) {
-          display: none;
-        }
+        @include columnHide(675px);
       }
       &.surp {
-        width: 65px;
-        @media screen and (max-width: 600px) {
-          width: 55px;
-        }
-        @media screen and (max-width: 550px) {
-          display: none;
-        }
+        @include columnWidth(65px, 55px);
+        @include columnHide(550px);
       }
     }
     td {
-      &.idx {
-        padding-left: 0;
-        padding-right: 0;
-      }
       &.rank {
         word-break: keep-all;
         white-space: nowrap;
@@ -71,9 +46,6 @@
       }
       &.surp {
         text-align: right;
-      }
-      &.title {
-        text-align: left;
       }
     }
   }
