@@ -5,6 +5,7 @@ import Table, { ICol } from '../libraries/Table';
 import { formatTimeout } from '../functions/format'
 import { useDocumentTitle, useGetJson } from '../hooks';
 import './Sakuras.scss';
+import Icon from 'antd/lib/icon';
 
 interface ISakura {
   id: number
@@ -20,16 +21,27 @@ function getCols(): ICol<ISakura>[] {
     { key: 'idx', title: '#', format: (_, idx) => idx + 1 },
     { key: 'title', title: '列表标题', format: formatLinkedTitle },
     { key: 'lastUpdate', title: '最后更新', format: formatLastUpdate },
+    { key: 'command', title: '操作', format: formatCommand }
   ];
 }
 
 function formatLinkedTitle(row: ISakura) {
-  return <Link to={`/discs/sakura/${row.key}`}>{row.title + `(${row.discsSize})`}</Link>
+  return (
+    <Link to={`/discs/sakura/${row.key}`}>
+      {row.title + `(${row.discsSize})`}
+    </Link>
+  )
 }
 
 function formatLastUpdate(row: ISakura) {
   if (!row.modifyTime) return '停止更新'
   return `${formatTimeout(row.modifyTime)}前`
+}
+
+function formatCommand(row: ISakura) {
+  return (
+    <Link to={`/sakuras/${row.key}`}><Icon type="edit" /></Link>
+  )
 }
 
 export default function Sakuras() {

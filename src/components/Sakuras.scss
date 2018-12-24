@@ -10,6 +10,9 @@
       &.lastUpdate {
         @include columnWidth(150px, 110px);
       }
+      &.command {
+        @include columnWidth(40px, 35px);
+        @include columnCenter();
       }
     }
   }
