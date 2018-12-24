@@ -35,7 +35,7 @@ function App({ location, history }: RouteChildrenProps) {
                 <Route
                   key={route.path}
                   path={route.path}
-                  exact={route.exact === true}
+                  exact={route.exact !== false}
                   component={lazy(route.loader)}
                 />
               ))}

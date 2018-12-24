@@ -1,7 +1,15 @@
+import { FunctionComponent } from 'react';
+
+interface IRoute {
+  path: string
+  exact?: boolean
+  title?: string
+  loader: () => Promise<{ default: FunctionComponent }>
+}
+
 export default [
   {
     path: '/',
-    exact: true,
     title: 'Home',
     loader: () => import(/* webpackChunkName: "home" */ './components/Home')
   },
@@ -21,4 +29,4 @@ export default [
     path: '*',
     loader: () => import(/* webpackChunkName: "notfound" */ './components/NotFound')
   },
-]
+] as IRoute[]
