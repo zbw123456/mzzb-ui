@@ -1,12 +1,11 @@
 import React from 'react';
 import Spin from 'antd/lib/spin';
 import Alert from 'antd/lib/alert';
-import { IResult } from '../hooks';
 import Button from 'antd/lib/button';
+import { Result } from '../hooks';
 
 interface IProps<T> {
-  result: IResult<T>
-  refresh?: () => void
+  result: Result<T>
   render: (data: T) => JSX.Element
   renderError?: (error: string) => JSX.Element,
   renderLoading?: (first: boolean) => JSX.Element
@@ -35,8 +34,7 @@ function defaultRenderRefresh(refresh: () => void) {
 }
 
 export default function DataWarpper<T>({
-  result: { loading, error, data },
-  refresh,
+  result: { loading, error, data, refresh },
   render,
   renderError = defaultRenderError,
   renderLoading = defaultRenderLoading,

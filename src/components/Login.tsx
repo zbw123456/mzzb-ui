@@ -16,7 +16,7 @@ export default function Login() {
   useDocumentTitle('Login')
   const username = useInput('admin')
   const password = useInput('123456')
-  const [result] = useGetJson<ISession>('/api/session')
+  const result = useGetJson<ISession>('/api/session')
   if (result.error) {
     return (
       <Alert type="error" message={result.error} />

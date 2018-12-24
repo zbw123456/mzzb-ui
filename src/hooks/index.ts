@@ -23,16 +23,18 @@ export function useInput<S>(initialState: S | (() => S)) {
 /**
  * useGetJson()
  */
-export interface IResult<IData> {
+interface IResult<IData> {
   loading: boolean
   error?: string
   data?: IData
 }
 
+export type Result<IData> = IResult<IData> & { refresh: () => void }
+
 export function useGetJson<IData>(
   url: string,
   initialState: IResult<IData> = { loading: false }
-) {
+): Result<IData> {
   const [count, setCount] = useState(0)
   const [state, setState] = useState<IResult<IData>>(initialState)
   useEffect(() => {
@@ -41,6 +43,5 @@ export function useGetJson<IData>(
       .then(json => setState({ data: json.data, loading: false }))
       .catch(error => setState({ ...state, error: error.message, loading: false }))
   }, [url, count])
-  const result = [state, () => setCount(count + 1)]
-  return result as [IResult<IData>, () => void]
+  return { ...state, refresh: () => setCount(count + 1) }
 }

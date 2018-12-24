@@ -33,18 +33,17 @@ function formatLastUpdate(row: ISakura) {
 
 export default function Sakuras() {
   useDocumentTitle('Sakuras')
-  const [result, refresh] = useGetJson<ISakura[]>('/api/sakuras')
+  const result = useGetJson<ISakura[]>('/api/sakuras')
   return (
     <div className="Sakuras">
       <DataWarpper
         result={result}
-        refresh={refresh}
         render={sakuras => (
           <Table
             mark="Sakuras"
             rows={sakuras}
             cols={getCols()}
-            refresh={refresh}
+            refresh={result.refresh}
             defaultSort={(a, b) => b.key.localeCompare(a.key)}
           />
         )}
