@@ -1,34 +1,47 @@
 import React from 'react';
-import { RouteChildrenProps } from 'react-router';
 import DataWarpper from '../libraries/DataWarpper';
 import Table, { ICol } from '../libraries/Table';
 import { formatNumber } from '../functions/format';
 import { compareFactory } from '../functions/compare';
-import { useGetJson, IResult } from '../hooks';
+import { IResult } from '../hooks';
 import './Discs.scss';
 
-const query = '?discColumns=id,asin,title,titlePc,thisRank,prevRank,todayPt,totalPt,guessPt,updateTime,surplusDays';
-
-export default function Discs({ match }: RouteChildrenProps<Params, {}>) {
-  const { findby, search } = match!.params
-  if (findby === 'sakura') {
-    const [result, refresh] = useGetJson<Search>(`/api/sakuras/key/${search}/discs` + query)
-    return renderTable(result, `${findby}-${search}`, refresh)
-  }
-  return <>Nothing</>
+interface IProps {
+  mark: string
+  result: IResult<IData>
+  refresh: () => void
 }
 
-function renderTable(result: IResult<Search>, mark: string, refresh: () => void) {
+export interface IData {
+  title: string
+  discs: IDisc[]
+}
+
+interface IDisc {
+  id: number
+  asin: string
+  title: string
+  titlePc?: string
+  thisRank?: number
+  prevRank?: number
+  todayPt?: number
+  totalPt?: number
+  guessPt?: number
+  updateTime?: number
+  surplusDays: number
+}
+
+export default function Discs({ mark, result, refresh }: IProps) {
   return (
     <div className="Discs">
       <DataWarpper
         result={result}
-        render={search => (
+        render={({ title, discs }) => (
           <Table
             mark={`Discs-${mark}`}
             cols={getCols()}
-            rows={search.discs}
-            title={search.title}
+            rows={discs}
+            title={title}
             refresh={refresh}
             defaultSort={compareFactory<IDisc, number>({
               apply: disc => disc.thisRank,
@@ -49,7 +62,7 @@ function renderTable(result: IResult<Search>, mark: string, refresh: () => void)
         )}
       />
     </div>
-  );
+  )
 }
 
 function getCols(): ICol<IDisc>[] {
@@ -136,28 +149,4 @@ function rankTdClass(disc: IDisc) {
     }
   }
   return ''
-}
-
-interface Params {
-  findby: string
-  search: string
-}
-
-interface Search {
-  title: string
-  discs: IDisc[]
-}
-
-interface IDisc {
-  id: number
-  asin: string
-  title: string
-  titlePc?: string
-  thisRank?: number
-  prevRank?: number
-  todayPt?: number
-  totalPt?: number
-  guessPt?: number
-  updateTime?: number
-  surplusDays: number
 }
