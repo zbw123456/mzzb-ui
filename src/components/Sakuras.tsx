@@ -4,6 +4,7 @@ import DataWarpper from '../libraries/DataWarpper';
 import Table, { ICol } from '../libraries/Table';
 import { formatTimeout } from '../functions/format'
 import { useDocumentTitle, useGetJson } from '../hooks';
+import './Sakuras.scss';
 
 interface ISakura {
   id: number
@@ -17,8 +18,8 @@ interface ISakura {
 function getCols(): ICol<ISakura>[] {
   return [
     { key: 'idx', title: '#', format: (_, idx) => idx + 1 },
-    { key: 'title', title: 'Title', format: formatLinkedTitle },
-    { key: 'lastUpdate', title: 'Last Update', format: formatLastUpdate },
+    { key: 'title', title: '列表标题', format: formatLinkedTitle },
+    { key: 'lastUpdate', title: '最后更新', format: formatLastUpdate },
   ];
 }
 
@@ -27,7 +28,7 @@ function formatLinkedTitle(row: ISakura) {
 }
 
 function formatLastUpdate(row: ISakura) {
-  if (!row.modifyTime) return 'Stop Updated'
+  if (!row.modifyTime) return '停止更新'
   return `${formatTimeout(row.modifyTime)}前`
 }
 

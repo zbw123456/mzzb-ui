@@ -1,0 +1,26 @@
+.Sakuras {
+  .table {
+    th {
+      &.idx {
+        width: 40px;
+        text-align: center;
+        @media screen and (max-width: 600px) {
+          width: 35px;
+        }
+      }
+      &.lastUpdate {
+        width: 150px;
+        @media screen and (max-width: 600px) {
+          width: 110px;
+        }
+      }
+    }
+    td {
+      &.idx {
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+      }
+    }
+  }
+}
