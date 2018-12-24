@@ -19,8 +19,12 @@ export default [
     loader: () => import(/* webpackChunkName: "sakuras" */ './components/Sakuras')
   },
   {
+    path: '/sakuras/:key',
+    loader: () => import(/* webpackChunkName: "sakuras-key" */ './components/SakurasKey')
+  },
+  {
     path: '/discs/sakura/:search',
-    loader: () => import(/* webpackChunkName: "discs" */ './components/DiscsSakura')
+    loader: () => import(/* webpackChunkName: "discs-sakura" */ './components/DiscsSakura')
   }, {
     path: '/login',
     loader: () => import(/* webpackChunkName: "login" */ './components/Login')

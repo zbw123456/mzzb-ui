@@ -7,12 +7,13 @@ import { useDocumentTitle, useGetJson } from '../hooks';
 import './Sakuras.scss';
 import Icon from 'antd/lib/icon';
 
-interface ISakura {
+export interface ISakura {
   id: number
   key: string
   title: string
   enabled: boolean
   discsSize: number
+  viewType: string
   modifyTime: number
 }
 
