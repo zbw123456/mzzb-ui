@@ -36,6 +36,7 @@ export default function Discs({ mark, result, refresh }: IProps) {
     <div className="Discs">
       <DataWarpper
         result={result}
+        refresh={refresh}
         render={({ title, discs }) => (
           <Table
             mark={`Discs-${mark}`}

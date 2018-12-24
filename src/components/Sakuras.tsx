@@ -5,7 +5,7 @@ import Table, { ICol } from '../libraries/Table';
 import { formatTimeout } from '../functions/format'
 import { useDocumentTitle, useGetJson } from '../hooks';
 
-interface IRow {
+interface ISakura {
   id: number
   key: string
   title: string
@@ -14,7 +14,7 @@ interface IRow {
   modifyTime: number
 }
 
-function getCols(): ICol<IRow>[] {
+function getCols(): ICol<ISakura>[] {
   return [
     { key: 'idx', title: '#', format: (_, idx) => idx + 1 },
     { key: 'title', title: 'Title', format: formatLinkedTitle },
@@ -22,27 +22,29 @@ function getCols(): ICol<IRow>[] {
   ];
 }
 
-function formatLinkedTitle(row: IRow) {
+function formatLinkedTitle(row: ISakura) {
   return <Link to={`/discs/sakura/${row.key}`}>{row.title + `(${row.discsSize})`}</Link>
 }
 
-function formatLastUpdate(row: IRow) {
+function formatLastUpdate(row: ISakura) {
   if (!row.modifyTime) return 'Stop Updated'
   return `${formatTimeout(row.modifyTime)}前`
 }
 
 export default function Sakuras() {
   useDocumentTitle('Sakuras')
-  const [result] = useGetJson<IRow[]>('/api/sakuras')
+  const [result, refresh] = useGetJson<ISakura[]>('/api/sakuras')
   return (
     <div className="Sakuras">
       <DataWarpper
         result={result}
-        render={rows => (
+        refresh={refresh}
+        render={sakuras => (
           <Table
             mark="Sakuras"
-            rows={rows}
+            rows={sakuras}
             cols={getCols()}
+            refresh={refresh}
             defaultSort={(a, b) => b.key.localeCompare(a.key)}
           />
         )}
