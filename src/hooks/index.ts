@@ -6,7 +6,7 @@ export function useDocumentTitle(title: string, inputs: ReadonlyArray<any> = [])
     const prevTitle = document.title
     document.title = `${title} - mingzuozhibi.com`
     return () => document.title = prevTitle
-  }, inputs)
+  }, ...inputs)
 }
 
 export interface IResult<T> {
@@ -15,13 +15,15 @@ export interface IResult<T> {
 }
 
 export function useGetJson<T>(url: string, initialState: IResult<T> = {}) {
+  const [count, setCount] = useState(0)
   const [state, setState] = useState<IResult<T>>(initialState)
   useEffect(() => {
     request(url)
       .then(json => setState({ data: json.data }))
-      .catch(error => setState({ error: error.message }))
-  }, [url])
-  return state
+      .catch(error => setState({ ...state, error: error.message }))
+  }, [url, count])
+  const result = [state, () => setCount(count + 1)]
+  return result as [IResult<T>, () => void]
 }
 
 export function useInput<S>(initialState: S | (() => S)) {

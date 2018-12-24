@@ -33,11 +33,11 @@ function formatLastUpdate(row: IRow) {
 
 export default function Sakuras() {
   useDocumentTitle('Sakuras')
-  const sakuras = useGetJson<IRow[]>('/api/sakuras')
+  const [result] = useGetJson<IRow[]>('/api/sakuras')
   return (
     <div className="Sakuras">
       <DataWarpper
-        result={sakuras}
+        result={result}
         render={rows => (
           <Table
             mark="Sakuras"

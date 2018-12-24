@@ -16,14 +16,14 @@ export default function Login() {
   useDocumentTitle('Login')
   const username = useInput('admin')
   const password = useInput('123456')
-  const session = useGetJson<ISession>('/api/session')
-  if (session.error) {
+  const [result] = useGetJson<ISession>('/api/session')
+  if (result.error) {
     return (
-      <Alert type="error" message={session.error} />
+      <Alert type="error" message={result.error} />
     )
   }
-  if (session.data) {
-    const { isLogged, userName } = session.data
+  if (result.data) {
+    const { isLogged, userName } = result.data
     if (isLogged) {
       return (
         <div className="Login">

@@ -24,6 +24,7 @@ interface IProps<IRow> {
   rows: IRow[]
   cols: ICol<IRow>[]
   title?: string
+  refresh?: () => void
   trClass?: (t: IRow) => string
   copyFmt?: (t: IRow, i: number) => String
   defaultSort?: ((a: IRow, b: IRow) => number)
@@ -37,7 +38,7 @@ interface IState {
 }
 
 export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
-  const { mark, rows, cols, title, trClass, copyFmt, defaultSort } = props
+  const { mark, rows, cols, title, refresh, trClass, copyFmt, defaultSort } = props
   const [state, setState] = useState<IState>(() => {
     return loadState(mark, { copyMode: false, selected: new Set() })
   })
@@ -47,7 +48,7 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
 
   return (
     <div className="table-warpper">
-      {(title || copyFmt) && renderCaption()}
+      {(title || copyFmt || refresh) && renderCaption()}
       <table className="table table-striped table-bordered table-hover">
         <thead>
           <tr>
@@ -114,6 +115,13 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
             {!copyMode ? renderViewButtons() : renderCopyButtons()}
           </span>
         )}
+        {refresh && (
+          <span className="table-buttons">
+            <Button.Group>
+              <Button onClick={refresh}>刷新数据</Button>
+            </Button.Group>
+          </span>
+        )}
       </div>
     )
   }
@@ -122,7 +130,7 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
     return (
       <Button.Group>
         <Button onClick={() => setCopyMode(true)}>复制排名</Button>
-      </Button.Group >
+      </Button.Group>
     )
   }
 

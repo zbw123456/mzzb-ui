@@ -12,13 +12,13 @@ const query = '?discColumns=id,asin,title,titlePc,thisRank,prevRank,todayPt,tota
 export default function Discs({ match }: RouteChildrenProps<Params, {}>) {
   const { findby, search } = match!.params
   if (findby === 'sakura') {
-    const result = useGetJson<Search>(`/api/sakuras/key/${search}/discs` + query)
-    return renderTable(result, `${findby}-${search}`)
+    const [result, refresh] = useGetJson<Search>(`/api/sakuras/key/${search}/discs` + query)
+    return renderTable(result, `${findby}-${search}`, refresh)
   }
   return <>Nothing</>
 }
 
-function renderTable(result: IResult<Search>, mark: string) {
+function renderTable(result: IResult<Search>, mark: string, refresh: () => void) {
   return (
     <div className="Discs">
       <DataWarpper
@@ -29,6 +29,7 @@ function renderTable(result: IResult<Search>, mark: string) {
             cols={getCols()}
             rows={search.discs}
             title={search.title}
+            refresh={refresh}
             defaultSort={compareFactory<IDisc, number>({
               apply: disc => disc.thisRank,
               empty: rank => rank === undefined,

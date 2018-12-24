@@ -16,6 +16,12 @@ export default function DataWarpper<T>({
   renderError = (error: string) => <Alert type="error" message={error} />,
   renderLoading = () => <Spin delay={200} />,
 }: IProps<T>) {
+  if (result.data && result.error) {
+    return <>
+      {renderError(result.error)}
+      {render(result.data)}
+    </>
+  }
   if (result.data) {
     return render(result.data)
   }
