@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import request from "../functions/request";
+import { useEffect, useState } from 'react';
+import request from '../functions/request';
+import immer, { Draft } from 'immer';
 
 /**
  * useDocumentTitle()
@@ -29,7 +30,10 @@ interface IResult<IData> {
   data?: IData
 }
 
-export type Result<IData> = IResult<IData> & { refresh: () => void }
+export type Result<IData> = IResult<IData> & {
+  refresh: () => void
+  produce: (updater: (draft: Draft<IData>) => void) => void
+}
 
 export function useGetJson<IData>(
   url: string,
@@ -43,5 +47,15 @@ export function useGetJson<IData>(
       .then(json => setState({ data: json.data, loading: false }))
       .catch(error => setState({ ...state, error: error.message, loading: false }))
   }, [url, count])
-  return { ...state, refresh: () => setCount(count + 1) }
+  return {
+    ...state,
+    refresh: () => setCount(count + 1),
+    produce: (updater: (draft: Draft<IData>) => void) => {
+      setState({
+        ...state, data: immer(state.data, draft => {
+          draft && updater(draft)
+        })
+      })
+    }
+  }
 }
