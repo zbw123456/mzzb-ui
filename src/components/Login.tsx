@@ -3,7 +3,8 @@ import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
 import Alert from 'antd/lib/alert';
 import Button from 'antd/lib/button';
-import { useDocumentTitle, useInput, useGetJson } from '../hooks';
+import { useTitle, useInput } from '../hooks';
+import { useGetJson } from '../hooks/useGetJson';
 
 interface ISession {
   isLogged: boolean
@@ -13,7 +14,7 @@ interface ISession {
 }
 
 export default function Login() {
-  useDocumentTitle('Login')
+  useTitle('Login')
   const username = useInput('admin')
   const password = useInput('123456')
   const result = useGetJson<ISession>('/api/session')

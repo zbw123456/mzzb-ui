@@ -3,7 +3,7 @@ import DataWarpper from '../libraries/DataWarpper';
 import Table, { ICol } from '../libraries/Table';
 import { formatNumber } from '../functions/format';
 import { compareFactory } from '../functions/compare';
-import { Result } from '../hooks';
+import { Result } from '../hooks/useGetJson';
 import './Discs.scss';
 
 interface IProps {

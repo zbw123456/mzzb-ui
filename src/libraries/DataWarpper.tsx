@@ -2,7 +2,7 @@ import React from 'react';
 import Spin from 'antd/lib/spin';
 import Alert from 'antd/lib/alert';
 import Button from 'antd/lib/button';
-import { Result } from '../hooks';
+import { Result } from '../hooks/useGetJson';
 
 interface IProps<T> {
   result: Result<T>

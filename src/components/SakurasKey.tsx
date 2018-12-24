@@ -6,7 +6,8 @@ import Radio from 'antd/lib/radio';
 import Button from 'antd/lib/button';
 import Switch from 'antd/lib/switch';
 import DataWarpper from '../libraries/DataWarpper';
-import { useGetJson } from '../hooks';
+import { useTitle } from '../hooks';
+import { useGetJson } from '../hooks/useGetJson';
 import { ISakura } from './Sakuras';
 
 interface Params {
@@ -16,6 +17,8 @@ interface Params {
 export default function SakurasKey({ match }: RouteChildrenProps<Params, {}>) {
   const key = match!.params.key;
   const result = useGetJson<ISakura>(`/api/sakuras/key/${key}`)
+  const title = result.data ? result.data.title : '载入中'
+  useTitle(title, [title])
   return (
     <div className="DiscsKey">
       <DataWarpper

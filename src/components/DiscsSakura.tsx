@@ -1,7 +1,8 @@
 import React from 'react';
 import { RouteChildrenProps } from 'react-router';
-import { useGetJson } from '../hooks';
+import { useGetJson } from '../hooks/useGetJson';
 import Discs, { IData } from './Discs';
+import { useTitle } from '../hooks';
 
 interface Params {
   search: string
@@ -13,6 +14,8 @@ export default function DiscsSakura({ match }: RouteChildrenProps<Params, {}>) {
   const { search } = match!.params
   const url = `/api/sakuras/key/${search}/discs?${query}`
   const result = useGetJson<IData>(url)
+  const title = result.data ? result.data.title : '载入中'
+  useTitle(title, [title])
   return (
     <div className="DiscsSakura">
       <Discs

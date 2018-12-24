@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import DataWarpper from '../libraries/DataWarpper';
 import Table, { ICol } from '../libraries/Table';
 import { formatTimeout } from '../functions/format'
-import { useDocumentTitle, useGetJson } from '../hooks';
+import { useTitle } from '../hooks';
+import { useGetJson } from '../hooks/useGetJson';
 import './Sakuras.scss';
 import Icon from 'antd/lib/icon';
 
@@ -46,7 +47,7 @@ function formatCommand(row: ISakura) {
 }
 
 export default function Sakuras() {
-  useDocumentTitle('Sakuras')
+  useTitle('Sakuras')
   const result = useGetJson<ISakura[]>('/api/sakuras')
   return (
     <div className="Sakuras">
