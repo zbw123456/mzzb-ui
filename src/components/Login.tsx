@@ -34,7 +34,7 @@ export default function Login() {
   }
   return (
     <div className="Login">
-      <div className='form-warpper'>
+      <div className="form-warpper">
         <Input
           {...username}
           prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
