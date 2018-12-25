@@ -2,14 +2,14 @@ import React from 'react';
 import Spin from 'antd/lib/spin';
 import Alert from 'antd/lib/alert';
 import Button from 'antd/lib/button';
-import { Result } from '../hooks/useGetJson';
+import { IResultHandler } from '../hooks/useGetJson';
 
-interface IProps<T> {
-  result: Result<T>
-  render: (data: T, loading: boolean) => JSX.Element
+interface IProps<IData> {
+  result: IResultHandler<IData>
+  render: (data: IData) => JSX.Element
   renderError?: (error: string) => JSX.Element,
-  renderLoading?: (first: boolean) => JSX.Element
   renderRefresh?: (refresh: () => void, loading: boolean) => JSX.Element,
+  renderFirstLoading?: () => JSX.Element
 }
 
 function defaultRenderError(error: string) {
@@ -27,17 +27,28 @@ function defaultRenderRefresh(refresh: () => void, loading: boolean) {
   )
 }
 
+function defaultRenderFirstLoading() {
+  return (
+    <Spin delay={200} />
+  )
+}
+
 export default function DataWarpper<T>({
-  result: { loading, error, data, refresh },
+  result,
   render,
   renderError = defaultRenderError,
   renderRefresh = defaultRenderRefresh,
+  renderFirstLoading = defaultRenderFirstLoading,
 }: IProps<T>) {
+  const { loading, error, data, refresh } = result
+  const firstLoading = loading && !error && !data
+  const neverSuccess = error && !data
   return (
     <div className="DataWarpper">
+      {firstLoading && renderFirstLoading()}
       {error && renderError(error)}
-      {data && render(data, loading)}
-      {!data && error && refresh && renderRefresh(refresh, loading)}
+      {neverSuccess && renderRefresh(refresh, loading)}
+      {data && render(data)}
     </div>
   )
 }

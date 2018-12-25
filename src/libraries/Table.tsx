@@ -24,7 +24,7 @@ interface IProps<IRow> {
   rows: IRow[]
   cols: ICol<IRow>[]
   title?: string
-  refresh?: () => void
+  handler?: { refresh: () => void, loading: boolean }
   trClass?: (t: IRow) => string
   copyFmt?: (t: IRow, i: number) => String
   defaultSort?: ((a: IRow, b: IRow) => number)
@@ -38,7 +38,7 @@ interface IState {
 }
 
 export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
-  const { mark, rows, cols, title, refresh, trClass, copyFmt, defaultSort } = props
+  const { mark, rows, cols, title, handler, trClass, copyFmt, defaultSort } = props
   const [state, setState] = useState<IState>(() => {
     return loadState(mark, { copyMode: false, selected: new Set() })
   })
@@ -48,7 +48,7 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
 
   return (
     <div className="table-warpper">
-      {(title || copyFmt || refresh) && renderCaption()}
+      {(title || copyFmt || handler) && renderCaption()}
       <table className="table table-striped table-bordered table-hover">
         <thead>
           <tr>
@@ -115,10 +115,10 @@ export default function Table<IRow extends BaseRow>(props: IProps<IRow>) {
             {!copyMode ? renderViewButtons() : renderCopyButtons()}
           </span>
         )}
-        {refresh && (
+        {handler && (
           <span className="table-buttons">
             <Button.Group>
-              <Button onClick={refresh}>刷新数据</Button>
+              <Button onClick={handler.refresh} loading={handler.loading}>刷新数据</Button>
             </Button.Group>
           </span>
         )}

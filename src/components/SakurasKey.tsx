@@ -23,7 +23,7 @@ export default function SakurasKey({ match }: RouteChildrenProps<Params, {}>) {
     <div className="DiscsKey">
       <DataWarpper
         result={result}
-        render={(({ id, key, title, enabled, viewType, modifyTime }, loading) => (
+        render={(({ id, key, title, enabled, viewType, modifyTime }) => (
           <div className="form-warpper">
             <Input
               addonBefore={<Icon type="key" />}
@@ -67,7 +67,7 @@ export default function SakurasKey({ match }: RouteChildrenProps<Params, {}>) {
             <div style={{ marginTop: 15 }}>
               <Button.Group>
                 <Button>保存</Button>
-                <Button onClick={result.refresh} loading={loading}>更新</Button>
+                <Button onClick={result.refresh} loading={result.loading}>更新</Button>
               </Button.Group>
             </div>
           </div>

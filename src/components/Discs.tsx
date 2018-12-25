@@ -3,12 +3,12 @@ import DataWarpper from '../libraries/DataWarpper';
 import Table, { ICol } from '../libraries/Table';
 import { formatNumber } from '../functions/format';
 import { compareFactory } from '../functions/compare';
-import { Result } from '../hooks/useGetJson';
+import { IResultHandler } from '../hooks/useGetJson';
 import './Discs.scss';
 
 interface IProps {
   mark: string
-  result: Result<IData>
+  result: IResultHandler<IData>
 }
 
 export interface IData {
@@ -38,10 +38,10 @@ export default function Discs({ mark, result }: IProps) {
         render={({ title, discs }) => (
           <Table
             mark={`Discs-${mark}`}
-            cols={getCols()}
             rows={discs}
+            cols={getCols()}
             title={title}
-            refresh={result.refresh}
+            handler={result}
             defaultSort={compareFactory<IDisc, number>({
               apply: disc => disc.thisRank,
               empty: rank => rank === undefined,

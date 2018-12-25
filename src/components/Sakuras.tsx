@@ -58,7 +58,7 @@ export default function Sakuras() {
             mark="Sakuras"
             rows={sakuras}
             cols={getCols()}
-            refresh={result.refresh}
+            handler={result}
             defaultSort={(a, b) => b.key.localeCompare(a.key)}
           />
         )}

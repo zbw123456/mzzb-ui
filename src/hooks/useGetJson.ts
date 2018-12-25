@@ -5,13 +5,14 @@ import immer, { Draft } from 'immer';
 /**
  * useGetJson()
  */
-interface IResult<IData> {
+export interface IResult<IData> {
   loading: boolean
   error?: string
   data?: IData
 }
 
-export type Result<IData> = IResult<IData> & {
+export interface IHandler<IData> {
+  loading: boolean
   refresh: () => void
   produce: (updater: Updater<IData>) => void
 }
@@ -20,25 +21,47 @@ interface Updater<IData> {
   (draft: Draft<IData>): void
 }
 
-export function useGetJson<IData>(
-  url: string,
-  initialState: IResult<IData> = { loading: false }
-): Result<IData> {
-  const [count, setCount] = useState(0)
+export type IResultHandler<IData> = IResult<IData> & IHandler<IData>
+
+export function useGetJson<IData>(url: string, data?: IData): IResultHandler<IData> {
+  const initialState = { loading: false, data }
   const [state, setState] = useState<IResult<IData>>(initialState)
-  useEffect(() => {
-    setState({ ...state, loading: true })
+
+  useEffect(doFetch, [url])
+
+  function doFetch() {
+    setFetchStart()
     request(url)
-      .then(json => setState({ data: json.data, loading: false }))
-      .catch(error => setState({ ...state, error: error.message, loading: false }))
-  }, [url, count])
-  return {
-    ...state,
-    refresh: () => setCount(count + 1),
-    produce: updater => {
-      setState(immer(draft => {
-        draft.data && updater(draft.data)
-      }))
-    }
+      .then(setFetchSuccess)
+      .catch(setFetchFailure)
   }
+
+  function setFetchStart() {
+    setState(immer(draft => {
+      draft.loading = true
+    }))
+  }
+
+  function setFetchSuccess(json: any) {
+    setState(immer(draft => {
+      draft.loading = false
+      draft.data = json.data
+      draft.error = undefined
+    }))
+  }
+
+  function setFetchFailure(error: any) {
+    setState(immer(draft => {
+      draft.loading = false
+      draft.error = error.message
+    }))
+  }
+
+  function produce(updater: Updater<IData>) {
+    setState(immer(draft => {
+      draft.data && updater(draft.data)
+    }))
+  }
+
+  return { ...state, refresh: doFetch, produce }
 }
