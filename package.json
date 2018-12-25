@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "proxy": "https://mingzuozhibi.com",
   "dependencies": {
-    "antd": "^3.11.5",
+    "antd": "^3.11.6",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.0.8",
     "immer": "^1.9.3",
